@@ -297,9 +297,12 @@ function Hero() {
         className="mx-auto mt-8 w-full max-w-3xl drop-shadow-[0_18px_34px_rgba(0,0,0,0.45)] motion-safe:animate-[bn-float_7s_ease-in-out_infinite]"
       />
       <h1 className="mt-6 font-[Poppins] text-3xl font-bold uppercase leading-tight text-white sm:text-5xl">
-        Combo de livros para
-        <span className="block text-[#00aeef]">gestores de manutenção</span>
+        Tudo pela <span className="text-[#00aeef]">metade do preço.</span>
       </h1>
+      <p className="mx-auto mt-4 max-w-2xl text-base text-white/85 sm:text-xl">
+        3 livros essenciais para profissionais da manutenção + Formação para Planejadores de
+        Manutenção em uma única oferta.
+      </p>
       <div className="mt-8">
         <CtaButton />
       </div>
