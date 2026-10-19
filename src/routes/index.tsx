@@ -1,356 +1,587 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState, type ReactNode } from "react";
+import {
+  BookOpen,
+  Check,
+  ChevronDown,
+  Clock,
+  Gift,
+  Mail,
+  MonitorPlay,
+  Award,
+  Truck,
+  User,
+  Phone,
+} from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Combo de Livros Black November — Engeteles" },
-      { name: "description", content: "Combo de livros de manutenção da Engeteles — Black November." },
+      {
+        name: "description",
+        content:
+          "Combo de livros de manutenção da Engeteles com curso bônus e frete grátis. Oferta Black November.",
+      },
+    ],
+    links: [
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap",
+      },
+    ],
+    scripts: [
+      // Google Tag Manager da Engeteles, mesmo container da página original.
+      {
+        children: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-W327944');`,
+      },
     ],
   }),
   component: Index,
 });
 
+// Oferta: edite aqui preços, links e prazo.
+const DEADLINE = new Date("2026-11-30T23:59:59-03:00").getTime();
+const COMBO_CHECKOUT = "https://pay.hotmart.com/F102672953E?off=ryyv0785";
+const COMBO_FROM = "R$ 600,00";
+const COMBO_PRICE = "R$ 299,00";
+
 type Book = {
-  section: string;
-  heading: string;
-  description: string;
-  descriptionText: string;
+  id: string;
+  title: string;
+  shortTitle: string;
+  subtitle: string;
   image: string;
   imageAlt: string;
-  chapters: string[];
-  chapterCount: number;
   pages: number;
+  chapters: string[];
   price: string;
-  infoList: string;
-  priceWidget: string;
-  toggleWidget: string;
+  href: string;
 };
 
-function enhanceFirstFold(frame: HTMLIFrameElement) {
-  const doc = frame.contentDocument;
-  if (!doc || doc.getElementById("bn-hero-motion")) return;
+const BOOKS: Book[] = [
+  {
+    id: "pcm",
+    title: "PCM Descomplicado — 4ª edição",
+    shortTitle: "PCM Descomplicado",
+    subtitle:
+      "Uma metodologia passo a passo para implantar e gerenciar um setor de Planejamento e Controle da Manutenção.",
+    image: "/assets/books/pcm-descomplicado-4a.webp",
+    imageAlt: "Livro PCM Descomplicado, quarta edição",
+    pages: 290,
+    chapters: [
+      "A evolução da manutenção",
+      "Tipos e estratégias de manutenção",
+      "Estrutura, papéis e conceitos do PCM",
+      "Planejamento da manutenção",
+      "Programação da manutenção",
+      "Controle da manutenção",
+      "Cadastro e hierarquização de ativos",
+      "Documentação das atividades de manutenção",
+      "Construção dos planos de manutenção",
+      "Indicadores de manutenção",
+      "Gestão de custos da manutenção",
+      "Implantação do PCM",
+    ],
+    price: "R$ 137,00",
+    href: "https://livros.engeteles.com.br/livro-pcm/",
+  },
+  {
+    id: "gfm",
+    title: "GFM — Gestão Financeira da Manutenção",
+    shortTitle: "Gestão Financeira da Manutenção",
+    subtitle:
+      "Aprenda a planejar orçamentos, controlar custos e tomar decisões financeiras estratégicas na manutenção.",
+    image: "/assets/books/gestao-financeira-manutencao.webp",
+    imageAlt: "Livro Gestão Financeira da Manutenção, segunda edição",
+    pages: 248,
+    chapters: [
+      "Introdução à gestão financeira empresarial",
+      "Gestão financeira aplicada à manutenção de ativos",
+      "Planejamento orçamentário do departamento de manutenção",
+      "Custo do ciclo de vida do ativo (LCC)",
+      "Gestão do Capex de manutenção",
+      "Gestão do Opex de manutenção",
+      "Métricas e indicadores para gestão financeira da manutenção",
+      "Decisões financeiras estratégicas para manutenção",
+    ],
+    price: "R$ 137,00",
+    href: "https://livros.engeteles.com.br/livro-gfm/",
+  },
+  {
+    id: "nemp",
+    title: "Não Existe Melhoria de Processos sem o Desenvolvimento de Pessoas",
+    shortTitle: "Não Existe Melhoria de Processos",
+    subtitle: "Um manual para desenvolver pessoas e melhorar processos no ambiente de manutenção.",
+    image: "/assets/books/nao-existe-melhoria-pessoas.webp",
+    imageAlt: "Livro Não Existe Melhoria de Processos sem o Desenvolvimento de Pessoas",
+    pages: 219,
+    chapters: [
+      "Desenvolvimento de si",
+      "Desenvolvimento do outro",
+      "Desenvolvimento da equipe",
+      "Implantação de processos",
+      "Melhoria de processos",
+      "Eliminação de processos",
+    ],
+    price: "R$ 99,00",
+    href: "https://livros.engeteles.com.br/nemp/",
+  },
+];
 
-  const style = doc.createElement("style");
-  style.id = "bn-hero-motion";
-  style.textContent = `
-    .bn-hero-art {
-      display: inline-block;
-      width: min(100%, 775px);
-      height: auto;
-      transform-origin: center;
-      will-change: transform, filter;
-      filter: drop-shadow(0 18px 34px rgba(0, 0, 0, .42)) drop-shadow(0 0 12px rgba(0, 191, 255, .12));
-      animation: bnHeroReveal .9s cubic-bezier(.2, .8, .2, 1) both, bnHeroFloat 7s ease-in-out .9s infinite;
-      transition: filter .35s ease;
-    }
-    .bn-hero-art:hover {
-      filter: drop-shadow(0 20px 36px rgba(0, 0, 0, .45)) drop-shadow(0 0 22px rgba(0, 191, 255, .3));
-    }
-    @keyframes bnHeroReveal {
-      from { opacity: 0; transform: translate3d(0, 22px, 0) scale(.965); }
-      to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
-    }
-    @keyframes bnHeroFloat {
-      0%, 100% { transform: translate3d(0, 0, 0); }
-      50% { transform: translate3d(0, -8px, 0); }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .bn-hero-art { animation: none; transition: none; opacity: 1; }
-    }
-    .bn-countdown { gap: clamp(6px, 1.2vw, 12px); flex-wrap: wrap; }
-    .bn-countdown .flip-card {
-      width: clamp(64px, 13vw, 86px);
-      height: clamp(76px, 14vw, 92px);
-      border: 1px solid rgba(0, 191, 255, .35);
-      border-radius: 14px;
-      background: linear-gradient(145deg, rgba(7, 41, 67, .98), rgba(3, 17, 31, .98));
-      box-shadow: 0 10px 28px rgba(0, 0, 0, .28), inset 0 1px 0 rgba(255,255,255,.12);
-      backdrop-filter: blur(8px);
-    }
-    .bn-countdown .flip-card::after { display: none; }
-    .bn-countdown .number { font-size: clamp(27px, 5vw, 40px); font-variant-numeric: tabular-nums; }
-    .bn-countdown .label { font-size: 9px; letter-spacing: .12em; }
-    .bn-chapter-panel { color: inherit; line-height: 1.55; }
-    .bn-chapter-panel h3 { margin: 0 0 12px; font-size: 1rem; }
-    .bn-chapter-panel ol { margin: 0; padding-left: 1.35rem; }
-    .bn-chapter-panel li { margin: 0 0 7px; }
-    .bn-separate-books { width: min(1180px, 100%); margin: 0 auto; padding: clamp(36px, 6vw, 72px) 20px; color: #fff; }
-    .bn-separate-heading { margin: 0 auto 28px; max-width: 760px; text-align: center; }
-    .bn-separate-heading h2 { color: #fff; margin: 0 0 10px; font-size: clamp(26px, 4vw, 38px); line-height: 1.15; }
-    .bn-separate-heading p { margin: 0; color: rgba(255,255,255,.76); }
-    .bn-book-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
-    .bn-book-card { display: flex; flex-direction: column; overflow: hidden; border-radius: 16px; background: #fff; color: #10263b; box-shadow: 0 16px 38px rgba(0,0,0,.24); }
-    .bn-book-card img { display: block; width: 100%; aspect-ratio: 1 / 1; object-fit: contain; padding: 12px; background: #f4f6f8; }
-    .bn-book-card-content { display: flex; flex: 1; flex-direction: column; padding: 18px; }
-    .bn-book-card h3 { margin: 0 0 8px; color: #10263b; font-size: 17px; line-height: 1.25; }
-    .bn-book-card .bn-author { margin: 0 0 12px; color: #47586a; font-size: 14px; }
-    .bn-book-facts { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; }
-    .bn-book-facts span { border-radius: 999px; background: #eef4f8; padding: 6px 10px; font-size: 12px; }
-    .bn-book-shipping { margin: 0 0 14px; color: #47586a; font-size: 13px; }
-    .bn-book-price { margin: auto 0 14px; color: #071f34; font-size: 22px; font-weight: 800; }
-    .bn-book-buy { display: block; border-radius: 9px; background: #04a9e8; color: #001e33 !important; padding: 13px 16px; text-align: center; font-weight: 800; text-decoration: none !important; transition: transform .2s ease, background .2s ease; }
-    .bn-book-buy:hover { transform: translateY(-2px); background: #29c3fa; }
-    @media (max-width: 820px) { .bn-book-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-    @media (max-width: 560px) { .bn-book-grid { grid-template-columns: 1fr; } }
-    @media (prefers-reduced-motion: reduce) { .bn-book-buy { transition: none; } }
-  `;
-  doc.head.appendChild(style);
+const BONUS = {
+  title: "Formação para Planejadores de Manutenção",
+  price: "R$ 227,00",
+  lessons: [
+    "Visão geral do que de fato é Planejamento de Manutenção",
+    "Seven Questions Planning",
+    "O papel do planejador de manutenção e a rotina do planejamento",
+    "Criando o inventário de ativos",
+    "Matriz de criticidade de ativos no Excel",
+    "FMEA no Excel",
+    "Como definir as atividades corretas para os planos de manutenção",
+    "Como definir as frequências de manutenção corretamente",
+    "Como elaborar uma matriz de conhecimento, habilidade e atitude",
+    "Como definir corretamente os recursos para atividades de manutenção",
+    "Como elaborar procedimentos de manutenção com base na confiabilidade humana",
+    "Como ser um planejador de manutenção disputado no mercado de trabalho",
+  ],
+};
 
-  const hero = doc.querySelector<HTMLImageElement>("img.wp-image-1800");
-  if (hero) {
-    hero.src = "/assets/black-november-livros.webp";
-    hero.removeAttribute("srcset");
-    hero.removeAttribute("sizes");
-    hero.alt = "Combo de livros Black November Engeteles";
-    hero.classList.remove("elementor-animation-buzz-out");
-    hero.classList.add("bn-hero-art");
-    const widget = doc.querySelector(".elementor-element-b717382");
-    widget?.classList.remove("elementor-invisible");
-    widget?.removeAttribute("data-settings");
-  }
+const FAQ: { q: string; a: ReactNode }[] = [
+  {
+    q: "Por que está tão barato?",
+    a: "Disponibilizar este conteúdo por um preço acessível foi a forma que encontramos de levar a mais pessoas um pedaço do que ensinamos em nossos treinamentos, para aplicação prática no dia a dia.",
+  },
+  {
+    q: "Será emitida nota fiscal?",
+    a: "Sim. Para pessoa física ou jurídica, a nota fiscal é emitida após o fim da garantia incondicional de 7 dias, contados da aprovação da compra.",
+  },
+  {
+    q: "Empresas podem adquirir o combo?",
+    a: (
+      <>
+        Sim. Solicite uma proposta pelo e-mail{" "}
+        <a href="mailto:comercial01@engeteles.com.br">comercial01@engeteles.com.br</a>.
+      </>
+    ),
+  },
+  {
+    q: "Vou receber o combo em casa?",
+    a: "Os livros são enviados pelos Correios. Em algumas regiões os Correios não fazem entrega domiciliar, então acompanhe o código de rastreamento enviado por e-mail e verifique se é preciso retirar o pacote na agência.",
+  },
+  {
+    q: "O que acontece se eu não atender o entregador?",
+    a: "Os Correios tentam a entrega cerca de duas vezes. Se o pacote não for retirado na agência, ele volta para a Engeteles e o novo envio custa R$ 20,00.",
+  },
+  {
+    q: "Qual o prazo de garantia?",
+    a: "A garantia é de 7 dias corridos. Como o envio acontece em até 1 dia útil, um cancelamento após o envio exige receber o livro, devolvê-lo à Engeteles e aguardar a chegada do exemplar para o reembolso.",
+  },
+  {
+    q: "Tenho acesso aos livros do combo em PDF?",
+    a: "Não. Os livros têm apenas versão física.",
+  },
+  {
+    q: "Qual o prazo para envio dos livros?",
+    a: "O envio acontece 1 dia útil após a confirmação do pagamento. A entrega leva até 10 dias úteis em regiões metropolitanas e grandes centros, e até 18 dias úteis em regiões remotas.",
+  },
+  {
+    q: "Como irei acompanhar a entrega do combo?",
+    a: (
+      <>
+        O código de rastreamento chega automaticamente no e-mail da compra assim que os livros são
+        postados. Se não receber, fale com a editora em{" "}
+        <a href="mailto:editora@engeteles.com.br">editora@engeteles.com.br</a> ou pelo telefone (61)
+        98272-5952.
+      </>
+    ),
+  },
+  {
+    q: "Moro fora do país. Posso adquirir o combo?",
+    a: (
+      <>
+        Sim, mas o frete grátis vale apenas para o Brasil. O frete internacional é pago por
+        transferência bancária mediante invoice, e a postagem ocorre em até 5 dias úteis após o
+        pagamento. Consulte valores e prazos em{" "}
+        <a href="mailto:editora@engeteles.com.br">editora@engeteles.com.br</a>.
+      </>
+    ),
+  },
+];
 
-  const countdown = doc.querySelector<HTMLElement>(".countdown");
-  if (countdown) {
-    countdown.classList.add("bn-countdown");
-    countdown.setAttribute("role", "timer");
-    countdown.setAttribute("aria-label", "Tempo restante da oferta Black November");
-    const deadline = new Date("2026-11-30T23:59:59-03:00").getTime();
-    const renderCountdown = () => {
-      if (!countdown.querySelector("#days")) {
-        countdown.innerHTML = `
-          <div class="flip-card"><div class="number" id="days">00</div><div class="label">Dias</div></div>
-          <div class="flip-card"><div class="number" id="hours">00</div><div class="label">Horas</div></div>
-          <div class="flip-card"><div class="number" id="minutes">00</div><div class="label">Minutos</div></div>
-          <div class="flip-card"><div class="number" id="seconds">00</div><div class="label">Segundos</div></div>
-        `;
-      }
-      const remaining = Math.max(0, deadline - Date.now());
-      const values = [
-        String(Math.floor(remaining / 86400000)).padStart(2, "0"),
-        String(Math.floor((remaining % 86400000) / 3600000)).padStart(2, "0"),
-        String(Math.floor((remaining % 3600000) / 60000)).padStart(2, "0"),
-        String(Math.floor((remaining % 60000) / 1000)).padStart(2, "0"),
-      ];
-      ["days", "hours", "minutes", "seconds"].forEach((id, index) => {
-        const value = doc.getElementById(id);
-        if (value && value.textContent !== values[index]) value.textContent = values[index];
-      });
-    };
-    const Observer = doc.defaultView?.MutationObserver;
-    if (Observer) new Observer(renderCountdown).observe(countdown, { childList: true, subtree: true });
-    renderCountdown();
-    doc.defaultView?.setInterval(renderCountdown, 1000);
-  }
-
-  const updateBook = (book: Book) => {
-    const section = doc.querySelector<HTMLElement>(book.section);
-    if (!section) return;
-    const heading = section.querySelector<HTMLElement>(".elementor-widget-heading .elementor-heading-title");
-    if (heading) heading.textContent = book.heading;
-    const description = section.querySelector<HTMLElement>(book.description);
-    if (description) description.textContent = book.descriptionText;
-    const image = section.querySelector<HTMLImageElement>(".elementor-widget-image img");
-    if (image) {
-      image.src = book.image;
-      image.removeAttribute("srcset");
-      image.removeAttribute("sizes");
-      image.alt = book.imageAlt;
-    }
-    const facts = section.querySelector<HTMLElement>(book.infoList);
-    if (facts) facts.textContent = `${book.chapterCount} capítulos · ${book.pages} páginas`;
-    const price = section.querySelector<HTMLElement>(book.priceWidget);
-    if (price) price.textContent = `R$ ${book.price}`;
-    const toggle = section.querySelector<HTMLElement>(book.toggleWidget);
-    if (toggle) {
-      const panel = doc.createElement("div");
-      panel.className = "bn-chapter-panel";
-      const label = doc.createElement("h3");
-      label.textContent = "Conteúdo do livro";
-      const list = doc.createElement("ol");
-      book.chapters.forEach((chapter) => {
-        const item = doc.createElement("li");
-        item.textContent = chapter;
-        list.appendChild(item);
-      });
-      panel.append(label, list);
-      toggle.replaceChildren(panel);
-    }
+function useCountdown(deadline: number) {
+  // null no servidor e no primeiro render, para não divergir na hidratação.
+  const [now, setNow] = useState<number | null>(null);
+  useEffect(() => {
+    setNow(Date.now());
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  const left = now === null ? 0 : Math.max(0, deadline - now);
+  return {
+    ready: now !== null,
+    ended: now !== null && left === 0,
+    parts: [
+      { label: "Dias", value: Math.floor(left / 86_400_000) },
+      { label: "Horas", value: Math.floor((left % 86_400_000) / 3_600_000) },
+      { label: "Minutos", value: Math.floor((left % 3_600_000) / 60_000) },
+      { label: "Segundos", value: Math.floor((left % 60_000) / 1000) },
+    ],
   };
+}
 
-  const books: Book[] = [
-    {
-      section: ".elementor-element-4d0b18b7",
-      heading: "Livro PCM Descomplicado — 4ª edição",
-      description: ".elementor-element-4cb30b68 .elementor-widget-container",
-      descriptionText: "Uma metodologia passo a passo para implantar e gerenciar um setor de Planejamento e Controle da Manutenção.",
-      image: "/assets/books/pcm-descomplicado-4a.webp",
-      imageAlt: "Livro PCM Descomplicado, quarta edição",
-      chapters: [
-        "A evolução da manutenção",
-        "Tipos e estratégias de manutenção",
-        "Estrutura, papéis e conceitos do PCM",
-        "Planejamento da manutenção",
-        "Programação da manutenção",
-        "Controle da manutenção",
-        "Cadastro e hierarquização de ativos",
-        "Documentação das atividades de manutenção",
-        "Construção dos planos de manutenção",
-        "Indicadores de manutenção",
-        "Gestão de custos da manutenção",
-        "Implantação do PCM",
-      ],
-      chapterCount: 12,
-      pages: 290,
-      price: "137,00",
-      infoList: ".elementor-element-1aac1eb5 .elementor-icon-list-text",
-      priceWidget: ".elementor-element-1e7a7749 .elementor-widget-container",
-      toggleWidget: ".elementor-element-4b7d5c38 .elementor-widget-container",
-    },
-    {
-      section: ".elementor-element-7e886528",
-      heading: "Livro GFM — Gestão Financeira da Manutenção",
-      description: ".elementor-element-1ac1b49 .elementor-widget-container",
-      descriptionText: "Aprenda a planejar orçamentos, controlar custos e tomar decisões financeiras estratégicas na manutenção.",
-      image: "/mirror/livros.engeteles.com.br/wp-content/uploads/2025/04/Sem-nome-1536-x-1024-px-1.png",
-      imageAlt: "Livro Gestão Financeira da Manutenção",
-      chapters: [
-        "Introdução à Gestão Financeira Empresarial",
-        "Gestão Financeira aplicada à Manutenção de Ativos",
-        "Planejamento Orçamentário do Departamento de Manutenção",
-        "Custo do Ciclo de Vida do Ativo (LCC)",
-        "Gestão do Capex de Manutenção",
-        "Gestão do Opex de Manutenção",
-        "Métricas e Indicadores para Gestão Financeira da Manutenção",
-        "Decisões Financeiras Estratégicas para Manutenção",
-      ],
-      chapterCount: 8,
-      pages: 248,
-      price: "137,00",
-      infoList: ".elementor-element-296cc4bf .elementor-icon-list-text",
-      priceWidget: ".elementor-element-190e44a0 .elementor-widget-container",
-      toggleWidget: ".elementor-element-73bbd135 .elementor-widget-container",
-    },
-    {
-      section: ".elementor-element-3b7bdeab",
-      heading: "Livro Não Existe Melhoria de Processos sem o Desenvolvimento de Pessoas",
-      description: ".elementor-element-21aa40d1 .elementor-widget-container",
-      descriptionText: "Um manual para desenvolver pessoas e melhorar processos no ambiente de manutenção.",
-      image: "/assets/books/nao-existe-melhoria-pessoas.webp",
-      imageAlt: "Livro Não Existe Melhoria de Processos sem o Desenvolvimento de Pessoas",
-      chapters: [
-        "Desenvolvimento de Si",
-        "Desenvolvimento do Outro",
-        "Desenvolvimento da Equipe",
-        "Implantação de Processos",
-        "Melhoria de Processos",
-        "Eliminação de Processos",
-      ],
-      chapterCount: 6,
-      pages: 219,
-      price: "99,00",
-      infoList: ".elementor-element-5f84e48 .elementor-icon-list-text",
-      priceWidget: ".elementor-element-7ba846a3 .elementor-widget-container",
-      toggleWidget: ".elementor-element-7fd4d04c .elementor-widget-container",
-    },
-  ];
+function Countdown() {
+  const { ready, ended, parts } = useCountdown(DEADLINE);
+  if (ended) return <p className="font-semibold text-[#00aeef]">Oferta encerrada</p>;
+  return (
+    <div
+      role="timer"
+      aria-label="Tempo restante da oferta Black November"
+      className="flex justify-center gap-2 sm:gap-3"
+    >
+      {parts.map((p) => (
+        <div
+          key={p.label}
+          className="flex w-16 flex-col items-center rounded-xl border border-[#00aeef]/35 bg-gradient-to-b from-[#072943] to-[#03111f] py-2 shadow-lg sm:w-20 sm:py-3"
+        >
+          <span className="text-2xl font-bold tabular-nums text-white sm:text-4xl">
+            {ready ? String(p.value).padStart(2, "0") : "--"}
+          </span>
+          <span className="text-[10px] uppercase tracking-widest text-white/70">{p.label}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
 
-  books.forEach(updateBook);
-  doc.querySelector(".elementor-element-3663903")?.remove();
-  doc.querySelector(".elementor-element-6b41e238")?.remove();
+function CtaButton({ children = "Quero adquirir meu combo" }: { children?: ReactNode }) {
+  return (
+    <a
+      href={COMBO_CHECKOUT}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-block rounded-full bg-gradient-to-r from-[#49c3db] to-[#306880] px-6 py-4 text-sm font-bold uppercase tracking-[0.08em] text-white sm:px-8 sm:tracking-[0.2em] shadow-[0_0_25px_rgba(0,174,239,0.35)] transition hover:-translate-y-0.5 hover:shadow-[0_0_35px_rgba(0,174,239,0.55)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white motion-reduce:transition-none"
+    >
+      {children}
+    </a>
+  );
+}
 
-  const combo = doc.querySelector<HTMLElement>(".elementor-element-8b0b462");
-  if (combo) {
-    const copy = combo.querySelector<HTMLElement>(".elementor-element-191dbf9e .elementor-widget-container");
-    if (copy) copy.textContent = "Os três livros e a Formação para Planejadores de Manutenção por quase metade do preço.";
-    const items = Array.from(combo.querySelectorAll<HTMLElement>(".elementor-element-1e09bd4d .elementor-icon-list-item"));
-    const offers = [
-      "<b>Livro 1</b> — PCM Descomplicado — <s>R$ 137,00</s>",
-      "<b>Livro 2</b> — GFM — <s>R$ 137,00</s>",
-      "<b>Livro 3</b> — Não Existe Melhoria de Processos — <s>R$ 99,00</s>",
-      "<b>Bônus</b> — Formação para Planejadores de Manutenção — <s>R$ 227,00</s>",
-    ];
-    items.forEach((item, index) => {
-      if (!offers[index]) { item.remove(); return; }
-      const text = item.querySelector<HTMLElement>(".elementor-icon-list-text");
-      if (text) text.innerHTML = offers[index];
-    });
-    const oldTotal = combo.querySelector<HTMLElement>(".elementor-element-448c4370 .elementor-widget-container");
-    if (oldTotal) oldTotal.innerHTML = 'De <strong><s>R$ 600,00</s></strong>';
-    const finalPrice = combo.querySelector<HTMLElement>(".elementor-element-32440c29 .elementor-heading-title");
-    if (finalPrice) finalPrice.innerHTML = 'Por <strong>R$ 299,00</strong> à vista';
-    combo.querySelector(".elementor-element-716e81c5")?.remove();
-    combo.querySelector(".elementor-element-11c49ec2")?.remove();
-  }
+function SectionTitle({ title, subtitle }: { title: string; subtitle?: string }) {
+  return (
+    <header className="mx-auto mb-10 max-w-3xl text-center">
+      <h2 className="font-[Poppins] text-2xl font-bold leading-tight text-white sm:text-4xl">
+        {title}
+      </h2>
+      {subtitle && <p className="mt-3 text-base text-white/75 sm:text-lg">{subtitle}</p>}
+    </header>
+  );
+}
 
-  const separate = doc.querySelector<HTMLElement>(".elementor-element-387d49ae");
-  if (separate) {
-    const cards = [
-      {
-        title: "PCM — Planejamento e Controle da Manutenção Descomplicado (4ª edição)",
-        image: "/assets/books/pcm-descomplicado-4a.webp",
-        alt: "Livro PCM Descomplicado, quarta edição",
-        chapters: 12,
-        pages: 290,
-        price: "R$ 137,00",
-        href: "https://livros.engeteles.com.br/livro-pcm/",
-      },
-      {
-        title: "GFM — Gestão Financeira da Manutenção",
-        image: "/mirror/livros.engeteles.com.br/wp-content/uploads/2025/04/Sem-nome-1536-x-1024-px-1.png",
-        alt: "Livro Gestão Financeira da Manutenção",
-        chapters: 8,
-        pages: 248,
-        price: "R$ 137,00",
-        href: "https://livros.engeteles.com.br/livro-gfm/",
-      },
-      {
-        title: "Não Existe Melhoria de Processos sem o Desenvolvimento de Pessoas",
-        image: "/assets/books/nao-existe-melhoria-pessoas.webp",
-        alt: "Livro Não Existe Melhoria de Processos sem o Desenvolvimento de Pessoas",
-        chapters: 6,
-        pages: 219,
-        price: "R$ 99,00",
-        href: "https://livros.engeteles.com.br/nemp/",
-      },
-    ];
-    separate.innerHTML = `
-      <div class="bn-separate-books">
-        <header class="bn-separate-heading">
-          <h2>Compre os livros separadamente</h2>
-          <p>Escolha o livro ideal para fortalecer sua gestão da manutenção.</p>
-        </header>
-        <div class="bn-book-grid">
-          ${cards.map((book) => `
-            <article class="bn-book-card">
-              <img src="${book.image}" alt="${book.alt}" loading="lazy">
-              <div class="bn-book-card-content">
-                <h3>${book.title}</h3>
-                <p class="bn-author">Autor: Jhonata Teles</p>
-                <div class="bn-book-facts">
-                  <span>${book.chapters} capítulos</span>
-                  <span>${book.pages} páginas</span>
-                </div>
-                <p class="bn-book-shipping">Frete grátis para todo o Brasil</p>
-                <p class="bn-book-price">${book.price}</p>
-                <a class="bn-book-buy" href="${book.href}" target="_blank" rel="noopener noreferrer">Comprar agora</a>
-              </div>
-            </article>
-          `).join("")}
+function Hero() {
+  return (
+    <section className="relative overflow-hidden bg-[radial-gradient(ellipse_at_top,#00325b_0%,#00182b_55%,#000_100%)] px-4 pb-16 pt-10 text-center">
+      <p className="mb-4 text-sm font-semibold uppercase tracking-widest text-[#00aeef]">
+        A oferta termina em
+      </p>
+      <Countdown />
+      <img
+        src="/assets/black-november-livros.webp"
+        alt="Livros PCM Descomplicado, Não Existe Melhoria de Processos e Gestão Financeira da Manutenção com o selo Black November"
+        width={1680}
+        height={945}
+        fetchPriority="high"
+        className="mx-auto mt-8 w-full max-w-3xl drop-shadow-[0_18px_34px_rgba(0,0,0,0.45)] motion-safe:animate-[bn-float_7s_ease-in-out_infinite]"
+      />
+      <h1 className="mt-6 font-[Poppins] text-3xl font-bold uppercase leading-tight text-white sm:text-5xl">
+        Combo de livros para
+        <span className="block text-[#00aeef]">gestores de manutenção</span>
+      </h1>
+      <div className="mt-8">
+        <CtaButton />
+      </div>
+      <ul className="mt-8 flex flex-wrap justify-center gap-x-8 gap-y-3 text-base font-medium uppercase text-white sm:text-lg">
+        <li className="flex items-center gap-2">
+          <Truck className="size-5 text-[#00aeef]" aria-hidden /> Frete grátis para todo o Brasil
+        </li>
+        <li className="flex items-center gap-2">
+          <Gift className="size-5 text-[#00aeef]" aria-hidden /> Bônus: curso online
+        </li>
+      </ul>
+    </section>
+  );
+}
+
+function BookSection({ book, index }: { book: Book; index: number }) {
+  const reverse = index % 2 === 1;
+  return (
+    <article id={book.id} className="mx-auto max-w-5xl scroll-mt-8">
+      <SectionTitle title={`Livro ${book.title}`} subtitle={book.subtitle} />
+      <div
+        className={`grid overflow-hidden rounded-2xl border border-[#0058a2]/60 bg-[#000c17]/60 md:grid-cols-2 ${reverse ? "md:[&>*:first-child]:order-2" : ""}`}
+      >
+        <div className="flex flex-col items-center justify-center gap-4 bg-[radial-gradient(#00264f,#00192f)] p-8">
+          <img
+            src={book.image}
+            alt={book.imageAlt}
+            loading="lazy"
+            className="aspect-square w-full max-w-xs object-cover"
+          />
+          <ul className="space-y-1 text-white/90">
+            <li className="flex items-center gap-2">
+              <BookOpen className="size-4 text-[#00aeef]" aria-hidden /> {book.pages} páginas ·{" "}
+              {book.chapters.length} capítulos
+            </li>
+            <li className="flex items-center gap-2">
+              <User className="size-4 text-[#00aeef]" aria-hidden /> Autor: Jhonata Teles
+            </li>
+          </ul>
+        </div>
+        <div className="p-6 sm:p-8">
+          <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-[#00aeef]">
+            Conteúdo do livro
+          </h3>
+          <ol className="divide-y divide-white/10">
+            {book.chapters.map((chapter, i) => (
+              <li key={chapter} className="flex gap-3 py-2.5">
+                <span className="w-6 shrink-0 text-right text-sm font-bold tabular-nums text-[#00aeef]">
+                  {i + 1}
+                </span>
+                <span className="text-sm font-semibold uppercase text-white">{chapter}</span>
+              </li>
+            ))}
+          </ol>
         </div>
       </div>
-    `;
-  }
+      <p className="mt-6 text-center text-2xl font-bold text-[#ff4d4d]">
+        De <s>{book.price}</s>
+      </p>
+    </article>
+  );
+}
+
+function BonusSection() {
+  return (
+    <section className="bg-[#00325b] px-4 py-16">
+      <div className="mx-auto max-w-5xl">
+        <SectionTitle
+          title="Ganhe um curso online de bônus ao adquirir o combo"
+          subtitle={BONUS.title}
+        />
+        <div className="grid items-center gap-10 md:grid-cols-2">
+          <div className="text-center">
+            <img
+              src="/assets/curso-planejadores.png"
+              alt="Curso Formação para Planejadores de Manutenção aberto em um notebook"
+              loading="lazy"
+              width={1024}
+              height={819}
+              className="mx-auto w-full max-w-md"
+            />
+            <ul className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2 text-white">
+              <li className="flex items-center gap-2">
+                <Clock className="size-4 text-[#00aeef]" aria-hidden /> 20 horas
+              </li>
+              <li className="flex items-center gap-2">
+                <Award className="size-4 text-[#00aeef]" aria-hidden /> Com certificado
+              </li>
+              <li className="flex items-center gap-2">
+                <MonitorPlay className="size-4 text-[#00aeef]" aria-hidden /> {BONUS.lessons.length}{" "}
+                aulas
+              </li>
+            </ul>
+            <p className="mt-4 text-xl font-bold text-[#ff4d4d]">
+              De <s>{BONUS.price}</s> por R$ 0,00
+            </p>
+          </div>
+          <div>
+            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-[#00aeef]">
+              O que você vai aprender
+            </h3>
+            <ol className="divide-y divide-white/10">
+              {BONUS.lessons.map((lesson, i) => (
+                <li key={lesson} className="flex gap-3 py-2 text-sm text-white">
+                  <span className="w-14 shrink-0 font-bold text-[#00aeef]">Aula {i + 1}</span>
+                  {lesson}
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function OfferSection() {
+  const items = [
+    ...BOOKS.map((b, i) => ({ label: `Livro ${i + 1}`, name: b.shortTitle, price: b.price })),
+    { label: "Bônus", name: BONUS.title, price: BONUS.price },
+  ];
+  return (
+    <section id="oferta" className="bg-black px-4 py-16">
+      <div className="mx-auto max-w-3xl rounded-3xl border border-[#00aeef]/40 bg-gradient-to-b from-[#00182b] to-[#000c17] px-6 py-10 text-center shadow-[0_0_34px_rgba(0,174,239,0.15)] sm:px-12">
+        <h2 className="font-[Poppins] text-2xl font-bold text-white sm:text-3xl">
+          Garanta essa condição exclusiva com desconto
+        </h2>
+        <ul className="mx-auto mt-8 max-w-xl space-y-3 text-left">
+          {items.map((item) => (
+            <li key={item.label} className="flex items-start gap-3 text-white">
+              <Check className="mt-0.5 size-5 shrink-0 text-[#00aeef]" aria-hidden />
+              <span className="flex-1">
+                <strong>{item.label}</strong> — {item.name}
+              </span>
+              <s className="shrink-0 text-white/60">{item.price}</s>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-8 text-lg text-white/70">
+          De <s>{COMBO_FROM}</s>
+        </p>
+        <p className="font-[Poppins] text-4xl font-extrabold text-white sm:text-5xl">
+          Por <span className="text-[#00aeef]">{COMBO_PRICE}</span>
+        </p>
+        <p className="mt-1 text-white/70">à vista, com frete grátis para todo o Brasil</p>
+        <div className="mt-8">
+          <CtaButton />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function SeparateBooks() {
+  return (
+    <section className="bg-gradient-to-b from-black to-[#00182b] px-4 py-16">
+      <div className="mx-auto max-w-5xl">
+        <SectionTitle
+          title="Prefere comprar os livros separadamente?"
+          subtitle="Os livros avulsos não têm o desconto do combo nem o curso bônus."
+        />
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {BOOKS.map((book) => (
+            <article
+              key={book.id}
+              className="flex flex-col overflow-hidden rounded-2xl bg-white text-[#10263b] shadow-xl"
+            >
+              <img
+                src={book.image}
+                alt={book.imageAlt}
+                loading="lazy"
+                className="aspect-square w-full bg-[#f4f6f8] object-cover p-3"
+              />
+              <div className="flex flex-1 flex-col p-5">
+                <h3 className="text-lg font-bold leading-snug">{book.title}</h3>
+                <p className="mt-1 text-sm text-[#47586a]">Autor: Jhonata Teles</p>
+                <p className="mt-3 text-sm text-[#47586a]">
+                  {book.chapters.length} capítulos · {book.pages} páginas · Frete grátis
+                </p>
+                <p className="mb-4 mt-auto pt-4 text-2xl font-extrabold">{book.price}</p>
+                <a
+                  href={book.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-lg bg-[#04a9e8] px-4 py-3 text-center font-bold text-[#001e33] transition hover:bg-[#29c3fa] motion-reduce:transition-none"
+                >
+                  Comprar este livro
+                </a>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FaqSection() {
+  return (
+    <section className="bg-[#f3f3f3] px-4 py-16 text-[#0058a2]">
+      <div className="mx-auto max-w-3xl">
+        <h2 className="mb-8 text-center font-[Poppins] text-2xl font-bold sm:text-3xl">
+          Perguntas frequentes
+        </h2>
+        <div className="divide-y divide-[#0058a2]/30 border-y border-[#0058a2]/30">
+          {FAQ.map((item) => (
+            <details key={item.q} className="group">
+              <summary className="flex cursor-pointer list-none items-center gap-3 py-4 font-semibold [&::-webkit-details-marker]:hidden">
+                <ChevronDown
+                  className="size-5 shrink-0 transition group-open:rotate-180 motion-reduce:transition-none"
+                  aria-hidden
+                />
+                {item.q}
+              </summary>
+              <div className="pb-5 pl-8 text-[#3f444b] [&_a]:font-semibold [&_a]:text-[#0058a2] [&_a]:underline">
+                {item.a}
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Footer() {
+  return (
+    <footer className="bg-[#00182b] px-4 py-10 text-sm text-white">
+      <div className="mx-auto grid max-w-5xl items-center gap-8 text-center sm:grid-cols-3 sm:text-left">
+        <img
+          src="/assets/logo-engeteles-editora.webp"
+          alt="Engeteles Editora"
+          width={512}
+          height={180}
+          loading="lazy"
+          className="mx-auto w-40 sm:mx-0"
+        />
+        <div>
+          <p className="mb-2 text-base font-semibold">Contato</p>
+          <a
+            href="mailto:contato@engeteles.com.br"
+            className="flex items-center justify-center gap-2 hover:underline sm:justify-start"
+          >
+            <Mail className="size-4" aria-hidden /> contato@engeteles.com.br
+          </a>
+          <a
+            href="https://api.whatsapp.com/send?phone=556196502757"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-1 flex items-center justify-center gap-2 hover:underline sm:justify-start"
+          >
+            <Phone className="size-4" aria-hidden /> (61) 99650-2757
+          </a>
+        </div>
+        <div className="text-white/80">
+          <p className="font-bold text-white">
+            ENGETELES Capacitação Profissional e Consultoria LTDA
+          </p>
+          <p>CNPJ: 23.607.144/0001-06</p>
+        </div>
+      </div>
+    </footer>
+  );
 }
 
 function Index() {
   return (
-    <iframe
-      src="/combo.html"
-      title="Combo de Livros Black November — Engeteles"
-      style={{ position: "fixed", inset: 0, width: "100%", height: "100dvh", border: 0, background: "#000" }}
-      allow="autoplay; fullscreen; picture-in-picture"
-      allowFullScreen
-      onLoad={(event) => enhanceFirstFold(event.currentTarget)}
-    />
+    <div className="min-h-screen bg-black font-[Montserrat] text-white antialiased">
+      <style>{`@keyframes bn-float { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-8px) } }`}</style>
+      <main>
+        <Hero />
+        <section className="space-y-20 bg-gradient-to-b from-black via-[#00182b] to-[#00325b] px-4 py-16">
+          {BOOKS.map((book, i) => (
+            <BookSection key={book.id} book={book} index={i} />
+          ))}
+        </section>
+        <BonusSection />
+        <OfferSection />
+        <SeparateBooks />
+        <FaqSection />
+      </main>
+      <Footer />
+    </div>
   );
 }
