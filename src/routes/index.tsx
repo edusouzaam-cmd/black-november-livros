@@ -283,7 +283,18 @@ function SectionTitle({ title, subtitle }: { title: string; subtitle?: string })
 
 function Hero() {
   return (
-    <section className="relative overflow-hidden bg-[radial-gradient(ellipse_at_top,#00325b_0%,#00182b_55%,#000_100%)] px-4 pb-16 pt-10 text-center">
+    <section className="relative isolate overflow-hidden bg-[radial-gradient(ellipse_at_top,#00325b_0%,#00182b_55%,#000_100%)] px-4 pb-16 pt-10 text-center">
+      {/* Foto decorativa em P&B, bem apagada, só para dar clima de indústria. */}
+      <img
+        src="/assets/fundo-industria.jpg"
+        alt=""
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10 h-full w-full object-cover opacity-[0.12] mix-blend-luminosity"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-[#00182b]/40 via-[#00182b]/60 to-black"
+      />
       <p className="mb-4 text-sm font-semibold uppercase tracking-widest text-[#00aeef]">
         A oferta termina em
       </p>
