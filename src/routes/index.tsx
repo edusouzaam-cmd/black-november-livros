@@ -6,13 +6,13 @@ import {
   ChevronDown,
   Clock,
   Gift,
-  Mail,
   MonitorPlay,
   Award,
   Truck,
   User,
-  Phone,
 } from "lucide-react";
+
+import { SiteShell } from "@/components/site/site-layout";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -22,20 +22,6 @@ export const Route = createFileRoute("/")({
         name: "description",
         content:
           "Combo de livros de manutenção da Engeteles com curso bônus e frete grátis. Oferta Black November.",
-      },
-    ],
-    links: [
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap",
-      },
-    ],
-    scripts: [
-      // Google Tag Manager da Engeteles, mesmo container da página original.
-      {
-        children: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-W327944');`,
       },
     ],
   }),
@@ -539,93 +525,10 @@ function FaqSection() {
   );
 }
 
-function Footer() {
-  return (
-    <footer className="bg-[#00182b] px-4 py-10 text-sm text-white">
-      <div className="mx-auto grid max-w-5xl items-center gap-8 text-center sm:grid-cols-3 sm:text-left">
-        <img
-          src="/assets/logo-engeteles-editora.webp"
-          alt="Engeteles Editora"
-          width={512}
-          height={180}
-          loading="lazy"
-          className="mx-auto w-40 sm:mx-0"
-        />
-        <div>
-          <p className="mb-2 text-base font-semibold">Contato</p>
-          <a
-            href="mailto:contato@engeteles.com.br"
-            className="flex items-center justify-center gap-2 hover:underline sm:justify-start"
-          >
-            <Mail className="size-4" aria-hidden /> contato@engeteles.com.br
-          </a>
-          <a
-            href="https://api.whatsapp.com/send?phone=556196502757"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-1 flex items-center justify-center gap-2 hover:underline sm:justify-start"
-          >
-            <Phone className="size-4" aria-hidden /> (61) 99650-2757
-          </a>
-        </div>
-        <div className="text-white/80">
-          <p className="font-bold text-white">
-            ENGETELES Capacitação Profissional e Consultoria LTDA
-          </p>
-          <p>CNPJ: 23.607.144/0001-06</p>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
-const MENU = [
-  { href: "#livros", label: "Livros" },
-  { href: "#bonus", label: "Bônus" },
-  { href: "#oferta", label: "Oferta" },
-  { href: "#faq", label: "Dúvidas" },
-];
-
-function Header() {
-  return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-[#00182b]/90 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4">
-        <a href="#topo" aria-label="Engeteles, voltar ao topo">
-          <img
-            src="/assets/logo-engeteles.png"
-            alt="Engeteles"
-            width={1092}
-            height={331}
-            className="h-8 w-auto sm:h-9"
-          />
-        </a>
-        <nav aria-label="Menu principal" className="hidden md:block">
-          <ul className="flex gap-8 text-sm font-semibold text-white/85">
-            {MENU.map((item) => (
-              <li key={item.href}>
-                <a href={item.href} className="transition hover:text-[#00aeef]">
-                  {item.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-        <a
-          href="#oferta"
-          className="rounded-full bg-[#00aeef] px-4 py-2 text-xs font-bold uppercase tracking-wider text-[#001e33] transition hover:bg-[#29c3fa] sm:px-5 sm:text-sm"
-        >
-          Comprar combo
-        </a>
-      </div>
-    </header>
-  );
-}
-
 function Index() {
   return (
-    <div id="topo" className="min-h-screen bg-black font-[Montserrat] text-white antialiased">
+    <SiteShell>
       <style>{`@keyframes bn-float { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-8px) } }`}</style>
-      <Header />
       <main>
         <Hero />
         <section
@@ -641,7 +544,6 @@ function Index() {
         <SeparateBooks />
         <FaqSection />
       </main>
-      <Footer />
-    </div>
+    </SiteShell>
   );
 }
