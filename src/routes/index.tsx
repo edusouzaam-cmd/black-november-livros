@@ -1,6 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
-import { BookOpen, Check, ChevronDown, Gift, Mail, Truck, User, Phone } from "lucide-react";
+import {
+  BookOpen,
+  Check,
+  ChevronDown,
+  Clock,
+  Gift,
+  Mail,
+  MonitorPlay,
+  Award,
+  Truck,
+  User,
+  Phone,
+} from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -122,6 +134,20 @@ const BOOKS: Book[] = [
 const BONUS = {
   title: "Formação para Planejadores de Manutenção",
   price: "R$ 227,00",
+  lessons: [
+    "Visão geral do que de fato é Planejamento de Manutenção",
+    "Seven Questions Planning",
+    "O papel do planejador de manutenção e a rotina do planejamento",
+    "Criando o inventário de ativos",
+    "Matriz de criticidade de ativos no Excel",
+    "FMEA no Excel",
+    "Como definir as atividades corretas para os planos de manutenção",
+    "Como definir as frequências de manutenção corretamente",
+    "Como elaborar uma matriz de conhecimento, habilidade e atitude",
+    "Como definir corretamente os recursos para atividades de manutenção",
+    "Como elaborar procedimentos de manutenção com base na confiabilidade humana",
+    "Como ser um planejador de manutenção disputado no mercado de trabalho",
+  ],
 };
 
 const FAQ: { q: string; a: ReactNode }[] = [
@@ -337,6 +363,59 @@ function BookSection({ book, index }: { book: Book; index: number }) {
   );
 }
 
+function BonusSection() {
+  return (
+    <section className="bg-[#00325b] px-4 py-16">
+      <div className="mx-auto max-w-5xl">
+        <SectionTitle
+          title="Ganhe um curso online de bônus ao adquirir o combo"
+          subtitle={BONUS.title}
+        />
+        <div className="grid items-center gap-10 md:grid-cols-2">
+          <div className="text-center">
+            <img
+              src="/assets/curso-planejadores.png"
+              alt="Curso Formação para Planejadores de Manutenção aberto em um notebook"
+              loading="lazy"
+              width={1024}
+              height={819}
+              className="mx-auto w-full max-w-md"
+            />
+            <ul className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2 text-white">
+              <li className="flex items-center gap-2">
+                <Clock className="size-4 text-[#00aeef]" aria-hidden /> 20 horas
+              </li>
+              <li className="flex items-center gap-2">
+                <Award className="size-4 text-[#00aeef]" aria-hidden /> Com certificado
+              </li>
+              <li className="flex items-center gap-2">
+                <MonitorPlay className="size-4 text-[#00aeef]" aria-hidden /> {BONUS.lessons.length}{" "}
+                aulas
+              </li>
+            </ul>
+            <p className="mt-4 text-xl font-bold text-[#ff4d4d]">
+              De <s>{BONUS.price}</s> por R$ 0,00
+            </p>
+          </div>
+          <div>
+            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-[#00aeef]">
+              O que você vai aprender
+            </h3>
+            <ol className="divide-y divide-white/10">
+              {BONUS.lessons.map((lesson, i) => (
+                <li key={lesson} className="flex gap-3 py-2 text-sm text-white">
+                  <span className="w-14 shrink-0 font-bold text-[#00aeef]">Aula {i + 1}</span>
+                  {lesson}
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function OfferSection() {
   const items = [
     ...BOOKS.map((b, i) => ({ label: `Livro ${i + 1}`, name: b.shortTitle, price: b.price })),
@@ -497,6 +576,7 @@ function Index() {
             <BookSection key={book.id} book={book} index={i} />
           ))}
         </section>
+        <BonusSection />
         <OfferSection />
         <SeparateBooks />
         <FaqSection />
