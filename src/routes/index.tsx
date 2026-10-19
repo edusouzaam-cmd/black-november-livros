@@ -80,7 +80,7 @@ function enhanceFirstFold(frame: HTMLIFrameElement) {
     .bn-separate-heading p { margin: 0; color: rgba(255,255,255,.76); }
     .bn-book-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
     .bn-book-card { display: flex; flex-direction: column; overflow: hidden; border-radius: 16px; background: #fff; color: #10263b; box-shadow: 0 16px 38px rgba(0,0,0,.24); }
-    .bn-book-card img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; background: #eef1f5; }
+    .bn-book-card img { display: block; width: 100%; aspect-ratio: 1 / 1; object-fit: contain; padding: 12px; background: #f4f6f8; }
     .bn-book-card-content { display: flex; flex: 1; flex-direction: column; padding: 18px; }
     .bn-book-card h3 { margin: 0 0 8px; color: #10263b; font-size: 17px; line-height: 1.25; }
     .bn-book-card .bn-author { margin: 0 0 12px; color: #47586a; font-size: 14px; }
@@ -183,7 +183,7 @@ function enhanceFirstFold(frame: HTMLIFrameElement) {
       heading: "Livro PCM Descomplicado — 4ª edição",
       description: ".elementor-element-4cb30b68 .elementor-widget-container",
       descriptionText: "Uma metodologia passo a passo para implantar e gerenciar um setor de Planejamento e Controle da Manutenção.",
-      image: "/mirror/livros.engeteles.com.br/wp-content/uploads/2026/03/pcm-descomplicado-thumb.png",
+      image: "/assets/books/pcm-descomplicado-4a.webp",
       imageAlt: "Livro PCM Descomplicado, quarta edição",
       chapters: [
         "A evolução da manutenção",
@@ -235,7 +235,7 @@ function enhanceFirstFold(frame: HTMLIFrameElement) {
       heading: "Livro Não Existe Melhoria de Processos sem o Desenvolvimento de Pessoas",
       description: ".elementor-element-21aa40d1 .elementor-widget-container",
       descriptionText: "Um manual para desenvolver pessoas e melhorar processos no ambiente de manutenção.",
-      image: "/mirror/livros.engeteles.com.br/wp-content/uploads/2023/10/Design-sem-nome-1.png",
+      image: "/assets/books/nao-existe-melhoria-pessoas.webp",
       imageAlt: "Livro Não Existe Melhoria de Processos sem o Desenvolvimento de Pessoas",
       chapters: [
         "Desenvolvimento de Si",
@@ -287,7 +287,7 @@ function enhanceFirstFold(frame: HTMLIFrameElement) {
     const cards = [
       {
         title: "PCM — Planejamento e Controle da Manutenção Descomplicado (4ª edição)",
-        image: "/mirror/livros.engeteles.com.br/wp-content/uploads/2026/03/pcm-descomplicado-thumb.png",
+        image: "/assets/books/pcm-descomplicado-4a.webp",
         alt: "Livro PCM Descomplicado, quarta edição",
         chapters: 12,
         pages: 290,
@@ -305,7 +305,7 @@ function enhanceFirstFold(frame: HTMLIFrameElement) {
       },
       {
         title: "Não Existe Melhoria de Processos sem o Desenvolvimento de Pessoas",
-        image: "/mirror/livros.engeteles.com.br/wp-content/uploads/2023/10/Design-sem-nome-1.png",
+        image: "/assets/books/nao-existe-melhoria-pessoas.webp",
         alt: "Livro Não Existe Melhoria de Processos sem o Desenvolvimento de Pessoas",
         chapters: 6,
         pages: 219,
