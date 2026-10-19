@@ -1,0 +1,18 @@
+Clonai — Relatório de Mirror
+==================================
+URL: https://livros.engeteles.com.br/?page_id=1758&preview=true
+Capturado em: 2026-10-19T13:51:31.422Z
+
+Recursos detectados na página: 372
+Assets estáticos tentados: 199
+Baixados para o mirror: 199
+Falharam: 0
+
+Nenhuma falha registrada. 🎉
+
+Obs.: recursos que falharam mantêm a URL original no HTML (carregam
+da web quando o clone é servido com internet). Envie este arquivo
+para diagnóstico se algo estiver faltando.
+
+Execução em segundo plano:
+Página e capturas preservadas.

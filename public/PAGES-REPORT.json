@@ -1,0 +1,239 @@
+{
+  "pages": [
+    {
+      "url": "https://livros.engeteles.com.br/ola-mundo/",
+      "depth": 1,
+      "title": "Olá, mundo! – Engeteles",
+      "path": "pages/page_001.html"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/pagina-exemplo/",
+      "depth": 1,
+      "title": "Página de exemplo – Engeteles",
+      "path": "pages/page_002.html"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/",
+      "depth": 1,
+      "title": "Engeteles – A sua Escola de Gestão da Manutenção",
+      "path": "pages/page_003.html"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/livro-pcm/",
+      "depth": 1,
+      "title": "Livro PCM DESCOMPLICADO – Planejamento e Controle da Manutenção 3ª Edição – Engeteles",
+      "path": "pages/page_004.html"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/manual-volume-1/",
+      "depth": 1,
+      "title": "Manual de Gestão da Mudança Volume 1 – Engeteles",
+      "path": "pages/page_005.html"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/manual-volume-2/",
+      "depth": 1,
+      "title": "Manual de Gestão da Mudança Volume 2 – Engeteles",
+      "path": "pages/page_006.html"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/livro-gfm/",
+      "depth": 1,
+      "title": "Livro GFM – Gestão Financeira da Manutenção – Engeteles",
+      "path": "pages/page_007.html"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/nemp/",
+      "depth": 1,
+      "title": "Não Existe Melhoria de Processos Sem o Desenvolvimento de Pessoas – Engeteles",
+      "path": "pages/page_008.html"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/pdmgm/",
+      "depth": 1,
+      "title": "Pré-diagnóstico de Maturidade da Gestão da Manutenção – Engeteles",
+      "path": "pages/page_009.html"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/tks-diagnostico/",
+      "depth": 1,
+      "title": "Agende uma reunião com especialista! – Engeteles",
+      "path": "pages/page_010.html"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/category/sem-categoria/",
+      "depth": 1,
+      "title": "Sem categoria – Engeteles",
+      "path": "pages/page_011.html"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/author/engeteles/",
+      "depth": 1,
+      "title": "engeteles – Engeteles",
+      "path": "pages/page_012.html"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/author/nerisjaquelinee/",
+      "depth": 1,
+      "title": "Marketing – Engeteles",
+      "path": "pages/page_013.html"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/wp-login.php",
+      "depth": 1,
+      "title": "Acessar ‹ Engeteles — WordPress",
+      "path": "pages/page_014.html"
+    }
+  ],
+  "report": [
+    {
+      "url": "https://livros.engeteles.com.br/ola-mundo/",
+      "status": "saved",
+      "finalUrl": "https://livros.engeteles.com.br/ola-mundo/"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/pagina-exemplo/",
+      "status": "saved",
+      "finalUrl": "https://livros.engeteles.com.br/pagina-exemplo/"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/",
+      "status": "saved",
+      "finalUrl": "https://livros.engeteles.com.br/"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/livro-pcm/",
+      "status": "saved",
+      "finalUrl": "https://livros.engeteles.com.br/livro-pcm/"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/manual-volume-1/",
+      "status": "saved",
+      "finalUrl": "https://livros.engeteles.com.br/manual-volume-1/"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/manual-volume-2/",
+      "status": "saved",
+      "finalUrl": "https://livros.engeteles.com.br/manual-volume-2/"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/livro-gfm/",
+      "status": "saved",
+      "finalUrl": "https://livros.engeteles.com.br/livro-gfm/"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/nemp/",
+      "status": "saved",
+      "finalUrl": "https://livros.engeteles.com.br/nemp/"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/pdmgm/",
+      "status": "saved",
+      "finalUrl": "https://livros.engeteles.com.br/pdmgm/"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/tks-diagnostico/",
+      "status": "saved",
+      "finalUrl": "https://livros.engeteles.com.br/tks-diagnostico/"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/category/sem-categoria/",
+      "status": "saved",
+      "finalUrl": "https://livros.engeteles.com.br/category/sem-categoria/"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/author/engeteles/",
+      "status": "saved",
+      "finalUrl": "https://livros.engeteles.com.br/author/engeteles/"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/author/nerisjaquelinee/",
+      "status": "saved",
+      "finalUrl": "https://livros.engeteles.com.br/author/nerisjaquelinee/"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/livro-pcm",
+      "status": "redirected",
+      "target": "https://livros.engeteles.com.br/livro-pcm/"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/combo-de-livros/",
+      "status": "failed",
+      "error": "HTTP 404"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/home",
+      "status": "failed",
+      "error": "HTTP 404"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/login",
+      "status": "saved",
+      "finalUrl": "https://livros.engeteles.com.br/wp-login.php"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/acesso",
+      "status": "failed",
+      "error": "HTTP 404"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/painel",
+      "status": "failed",
+      "error": "HTTP 404"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/entrar",
+      "status": "failed",
+      "error": "HTTP 404"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/cadastro",
+      "status": "failed",
+      "error": "HTTP 404"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/dashboard",
+      "status": "failed",
+      "error": "Redirecionamento fora do escopo de captura."
+    },
+    {
+      "url": "https://livros.engeteles.com.br/sobre",
+      "status": "failed",
+      "error": "HTTP 404"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/contato",
+      "status": "failed",
+      "error": "HTTP 404"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/signin",
+      "status": "failed",
+      "error": "HTTP 404"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/register",
+      "status": "failed",
+      "error": "HTTP 404"
+    },
+    {
+      "url": "https://livros.engeteles.com.br/account",
+      "status": "failed",
+      "error": "HTTP 404"
+    }
+  ],
+  "remaining": 0,
+  "attempted": 27,
+  "truncated": false,
+  "stopReason": "complete",
+  "discovery": {
+    "identified": 25,
+    "sitemapsChecked": 7,
+    "errors": [
+      {
+        "url": "https://livros.engeteles.com.br/sitemap_index.xml",
+        "error": "HTTP 404"
+      }
+    ]
+  }
+}
