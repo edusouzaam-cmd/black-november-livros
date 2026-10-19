@@ -296,7 +296,7 @@ function Hero() {
         fetchPriority="high"
         className="mx-auto mt-8 w-full max-w-3xl drop-shadow-[0_18px_34px_rgba(0,0,0,0.45)] motion-safe:animate-[bn-float_7s_ease-in-out_infinite]"
       />
-      <h1 className="mt-6 font-[Montserrat] text-3xl font-extrabold uppercase leading-tight text-white sm:text-5xl">
+      <h1 className="mt-6 font-[Montserrat] text-4xl font-extrabold leading-tight text-white sm:text-6xl lg:text-7xl">
         Tudo pela <span className="text-[#00aeef]">metade do preço.</span>
       </h1>
       <p className="mx-auto mt-4 max-w-2xl text-base text-white/85 sm:text-xl">
@@ -368,7 +368,7 @@ function BookSection({ book, index }: { book: Book; index: number }) {
 
 function BonusSection() {
   return (
-    <section className="bg-[#00325b] px-4 py-16">
+    <section id="bonus" className="scroll-mt-16 bg-[#00325b] px-4 py-16">
       <div className="mx-auto max-w-5xl">
         <SectionTitle
           title="Ganhe um curso online de bônus ao adquirir o combo"
@@ -425,7 +425,7 @@ function OfferSection() {
     { label: "Bônus", name: BONUS.title, price: BONUS.price },
   ];
   return (
-    <section id="oferta" className="bg-black px-4 py-16">
+    <section id="oferta" className="scroll-mt-16 bg-black px-4 py-16">
       <div className="mx-auto max-w-3xl rounded-3xl border border-[#00aeef]/40 bg-gradient-to-b from-[#00182b] to-[#000c17] px-6 py-10 text-center shadow-[0_0_34px_rgba(0,174,239,0.15)] sm:px-12">
         <h2 className="font-[Poppins] text-2xl font-bold text-white sm:text-3xl">
           Garanta essa condição exclusiva com desconto
@@ -502,7 +502,7 @@ function SeparateBooks() {
 
 function FaqSection() {
   return (
-    <section className="bg-[#f3f3f3] px-4 py-16 text-[#0058a2]">
+    <section id="faq" className="scroll-mt-16 bg-[#f3f3f3] px-4 py-16 text-[#0058a2]">
       <div className="mx-auto max-w-3xl">
         <h2 className="mb-8 text-center font-[Poppins] text-2xl font-bold sm:text-3xl">
           Perguntas frequentes
@@ -568,13 +568,59 @@ function Footer() {
   );
 }
 
+const MENU = [
+  { href: "#livros", label: "Livros" },
+  { href: "#bonus", label: "Bônus" },
+  { href: "#oferta", label: "Oferta" },
+  { href: "#faq", label: "Dúvidas" },
+];
+
+function Header() {
+  return (
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-[#00182b]/90 backdrop-blur">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4">
+        <a href="#topo" aria-label="Engeteles, voltar ao topo">
+          <img
+            src="/assets/logo-engeteles.png"
+            alt="Engeteles"
+            width={1092}
+            height={331}
+            className="h-8 w-auto sm:h-9"
+          />
+        </a>
+        <nav aria-label="Menu principal" className="hidden md:block">
+          <ul className="flex gap-8 text-sm font-semibold text-white/85">
+            {MENU.map((item) => (
+              <li key={item.href}>
+                <a href={item.href} className="transition hover:text-[#00aeef]">
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <a
+          href="#oferta"
+          className="rounded-full bg-[#00aeef] px-4 py-2 text-xs font-bold uppercase tracking-wider text-[#001e33] transition hover:bg-[#29c3fa] sm:px-5 sm:text-sm"
+        >
+          Comprar combo
+        </a>
+      </div>
+    </header>
+  );
+}
+
 function Index() {
   return (
-    <div className="min-h-screen bg-black font-[Montserrat] text-white antialiased">
+    <div id="topo" className="min-h-screen bg-black font-[Montserrat] text-white antialiased">
       <style>{`@keyframes bn-float { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-8px) } }`}</style>
+      <Header />
       <main>
         <Hero />
-        <section className="space-y-20 bg-gradient-to-b from-black via-[#00182b] to-[#00325b] px-4 py-16">
+        <section
+          id="livros"
+          className="scroll-mt-16 space-y-20 bg-gradient-to-b from-black via-[#00182b] to-[#00325b] px-4 py-16"
+        >
           {BOOKS.map((book, i) => (
             <BookSection key={book.id} book={book} index={i} />
           ))}
