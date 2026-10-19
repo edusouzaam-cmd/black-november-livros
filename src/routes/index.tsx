@@ -14,6 +14,7 @@ type Book = {
   section: string;
   heading: string;
   description: string;
+  descriptionText: string;
   image: string;
   imageAlt: string;
   chapters: string[];
