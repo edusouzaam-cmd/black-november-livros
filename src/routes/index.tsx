@@ -289,7 +289,7 @@ function Hero() {
         src="/assets/fundo-industria.jpg"
         alt=""
         aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10 h-full w-full object-cover opacity-[0.12] mix-blend-luminosity"
+        className="pointer-events-none absolute inset-0 -z-10 h-full w-full object-cover opacity-[0.22] mix-blend-luminosity"
       />
       <div
         aria-hidden
