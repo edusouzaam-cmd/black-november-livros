@@ -4,7 +4,7 @@ import { partytownSnippet } from "@qwik.dev/partytown/integration";
 // GA4 configuration, conversions and page-exit events keep their native state.
 const snippet = partytownSnippet({
   lib: "/~partytown/v1.0.3/",
-  forward: [["fbq", { preserveBehavior: true }]],
+  forward: ["__metaCommand"],
   resolveUrl(url, location, type) {
     if (type === "script" && url.hostname === "connect.facebook.net") {
       const proxy = new URL("/_analytics/script", location.href);
@@ -18,8 +18,8 @@ const snippet = partytownSnippet({
 // The original Meta API queue is retained for Partytown's automatic fallback.
 // GTM still issues the same init/track calls. The worker only hosts the runtime.
 const mainSetup = `(function(w,d){if(w.__metaWorkerActive)return;w.__metaWorkerActive=true;var n=w.fbq;if(!n){n=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};n.push=n;n.loaded=true;n.version='2.0';n.queue=[];w.fbq=n;w._fbq=n}w.__metaOriginalStub=n;function rewrite(node){if(w.__metaWorkerActive&&node&&node.nodeName==='SCRIPT'&&node.src){try{var u=new URL(node.src,d.baseURI);if(u.hostname==='connect.facebook.net'&&/^\\/[a-z]{2}_[A-Z]{2}\\/fbevents\\.js$/.test(u.pathname))node.src='/_analytics/meta-placeholder.js'}catch(e){}}}var append=Node.prototype.appendChild,insert=Node.prototype.insertBefore;Node.prototype.appendChild=function(node){rewrite(node);return append.call(this,node)};Node.prototype.insertBefore=function(node,before){rewrite(node);return insert.call(this,node,before)}})(window,document);`;
-const restoreApiAttributes = `Object.assign(window.fbq,{loaded:true,version:'2.0',queue:window.__metaOriginalStub.queue});window.fbq.push=window.fbq;window._fbq=window.fbq;`;
-const metaRuntime = `(function(w,d){var inWorker=d.currentScript&&d.currentScript.type.indexOf('partytown')>=0;if(!inWorker){w.__metaWorkerActive=false;if(w.__metaOriginalStub){w.fbq=w.__metaOriginalStub;w._fbq=w.fbq}}var n=w.fbq;if(!n||typeof n!=='function'){n=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};n.push=n;n.loaded=true;n.version='2.0';n.queue=[];w.fbq=n;w._fbq=n}if(n.callMethod)return;var s=d.createElement('script');s.async=true;s.src='https://connect.facebook.net/en_US/fbevents.js';d.head.appendChild(s)})(window,document);`;
+const restoreApiAttributes = `(function(w){var q=w.__metaOriginalStub.queue,push=Array.prototype.push;q.push=function(command){var result=push.call(q,command);if(w.__metaWorkerActive)w.__metaCommand(Array.prototype.slice.call(command));return result}})(window);`;
+const metaRuntime = `(function(w,d){var inWorker=d.currentScript&&d.currentScript.type.indexOf('partytown')>=0;if(!inWorker){w.__metaWorkerActive=false;if(w.__metaOriginalStub){w.fbq=w.__metaOriginalStub;w._fbq=w.fbq}}var n=w.fbq;if(!n||typeof n!=='function'){n=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};n.push=n;n.loaded=true;n.version='2.0';n.queue=[];w.fbq=n;w._fbq=n}w.__metaCommand=function(command){w.fbq.apply(w,command)};if(n.callMethod)return;var s=d.createElement('script');s.async=true;s.src='https://connect.facebook.net/en_US/fbevents.js';d.head.appendChild(s)})(window,document);`;
 
 export function useWorkerAnalytics(html: string): string {
   if (html.includes('id="analytics-worker-bootstrap"')) return html;
