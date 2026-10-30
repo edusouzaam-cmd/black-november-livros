@@ -143,3 +143,8 @@
     color: var(--color-foreground);
   }
 }
+
+/* Preserve the original family, with a width-matched system fallback during load. */
+.font-\[Montserrat\] {
+  font-family: "Montserrat", "Montserrat Fallback", Arial, sans-serif;
+}

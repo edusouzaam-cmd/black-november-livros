@@ -83,3 +83,56 @@
     U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
     U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
+
+/* Match Arial fallback widths and line metrics to Montserrat while WOFF2 loads.
+ * Metrics: @capsizecss/metrics 4.4.0; Montserrat hhea verified against bundled font. */
+@font-face {
+  font-family: "Montserrat Fallback";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Arial"), local("ArialMT");
+  size-adjust: 112.8307%;
+  ascent-override: 85.7923%;
+  descent-override: 22.2457%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Montserrat Fallback";
+  font-style: normal;
+  font-weight: 500;
+  src: local("Arial"), local("ArialMT");
+  size-adjust: 114.6252%;
+  ascent-override: 84.4491%;
+  descent-override: 21.8975%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Montserrat Fallback";
+  font-style: normal;
+  font-weight: 600;
+  src: local("Arial Bold"), local("Arial-BoldMT");
+  size-adjust: 108.3377%;
+  ascent-override: 89.3502%;
+  descent-override: 23.1683%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Montserrat Fallback";
+  font-style: normal;
+  font-weight: 700;
+  src: local("Arial Bold"), local("Arial-BoldMT");
+  size-adjust: 110.4212%;
+  ascent-override: 87.6644%;
+  descent-override: 22.7312%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Montserrat Fallback";
+  font-style: normal;
+  font-weight: 800;
+  src: local("Arial Bold"), local("Arial-BoldMT");
+  size-adjust: 112.5046%;
+  ascent-override: 86.0409%;
+  descent-override: 22.3102%;
+  line-gap-override: 0%;
+}
