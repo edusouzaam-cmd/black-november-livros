@@ -38,10 +38,16 @@ os mesmos pesos. GTM, WhatsApp e checkout Hotmart continuam usando seus serviço
 
 O pacote KingHost mantém o HTML pré-renderizado e remove os scripts de hidratação
 React/TanStack. As três páginas usam navegação HTML normal, o FAQ usa `details` nativo
-e o contador recebe um script de aproximadamente 1 KB. O build normal do Lovable
-continua usando React, para manter a edição e a prévia.
+e o contador recebe um script de aproximadamente 1 KB. A edição e a prévia de desenvolvimento continuam usando React.
+A produção do Lovable agora remove a hidratação nas três páginas públicas e usa
+o mesmo contador mínimo, sem alterar o HTML visual. Rotas desconhecidas, APIs,
+erros e desenvolvimento mantêm o comportamento original. Caso apareça um script
+interativo não reconhecido, o servidor preserva a resposta original com React.
 
 As imagens têm variantes responsivas; o navegador baixa a resolução adequada.
+As imagens são importadas pelo Vite a partir de `src/media`, gerando nomes com
+hash de conteúdo. Assim entram na política de cache dos assets de build e cada
+substituição recebe uma URL nova. Livros e bônus também usam AVIF com fallback WebP.
 A primeira dobra usa AVIF quando suportado, com fallback WebP, e preloads responsivos
 para o fundo e o combo. O fundo também recebe prioridade alta: foi o elemento LCP
 identificado no relatório mobile fornecido em 30/10/2026.
@@ -58,3 +64,11 @@ As regras opcionais de compressão e cache entram em vigor quando `htaccess` é 
 para `.htaccess` no servidor e os módulos Apache correspondentes estão disponíveis.
 Após enviar o pacote, confira o PageSpeed na URL publicada: a nota também depende
 do tempo de resposta da KingHost, do cache e das tags configuradas no GTM.
+
+
+A execução Actions também verifica o servidor de produção usado pelo Lovable:
+HTML sem módulos de hidratação, contador, FAQ, navegação e recarga das páginas legais,
+fontes, imagens e checkout. Os relatórios ficam no artifact `black-livros-lovable-auditoria`.
+Os scripts de Google/Meta continuam sendo servidos pelos próprios fornecedores; seu
+peso e os tempos de execução não podem ser reduzidos pelo build da página sem alterar
+a configuração das campanhas no GTM.

@@ -41,3 +41,31 @@ jobs:
           path: audit-results/
           if-no-files-found: warn
           retention-days: 30
+  lovable-production:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version: "22"
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.3.11"
+      - run: bun install --frozen-lockfile
+      - name: Testes e build de produção
+        run: |
+          bun run test
+          NITRO_PRESET=node-server bun run build
+      - name: Verificar HTML e interações da produção Lovable
+        run: |
+          npm install --prefix "$RUNNER_TEMP/lovable-browser" playwright@1.58.2 lighthouse@12.8.2
+          node "$RUNNER_TEMP/lovable-browser/node_modules/playwright/cli.js" install --with-deps chromium
+          PLAYWRIGHT_MODULE="$RUNNER_TEMP/lovable-browser/node_modules/playwright/index.mjs" LIGHTHOUSE_MODULE="$RUNNER_TEMP/lovable-browser/node_modules/lighthouse/core/index.js" node scripts/check-lovable.mjs
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: black-livros-lovable-auditoria
+          path: audit-results/
+          if-no-files-found: warn
+          retention-days: 30

@@ -2,8 +2,10 @@ import assert from "node:assert/strict";
 import { createServer } from "node:http";
 import { readFileSync, statSync, mkdirSync, writeFileSync } from "node:fs";
 import { resolve, extname } from "node:path";
+import { pathToFileURL } from "node:url";
 const { chromium } = await import(process.env["PLAYWRIGHT_MODULE"] || "playwright");
 const root = resolve("kinghost-package");
+const base = process.env["CHECK_BASE"] || "/black-livros/";
 const server = createServer((req, res) => {
   const url = new URL(req.url, "http://localhost");
   if (!url.pathname.startsWith("/black-livros/")) {
@@ -40,8 +42,8 @@ const server = createServer((req, res) => {
     res.writeHead(404).end();
   }
 });
-await new Promise((done) => server.listen(0, "127.0.0.1", done));
-const origin = `http://127.0.0.1:${server.address().port}`;
+if (!process.env["SITE_ORIGIN"]) await new Promise((done) => server.listen(0, "127.0.0.1", done));
+const origin = process.env["SITE_ORIGIN"] || `http://127.0.0.1:${server.address().port}`;
 const browser = await chromium.launch({ headless: true, args: ["--remote-debugging-port=9222"] });
 try {
   const page = await browser.newPage();
@@ -53,14 +55,17 @@ try {
   });
   // Third-party services remain external; avoid depending on them for this check.
   await page.route(/https:\/\/.*/, (route) => route.abort());
-  await page.goto(`${origin}/black-livros/`, { waitUntil: "networkidle" });
+  await page.goto(`${origin}${base}`, { waitUntil: "networkidle" });
+  const html = await (await page.request.get(`${origin}${base}`)).text();
+  assert(!/type="module"|rel="modulepreload"/.test(html), "Página pública não deve baixar React");
+  assert(html.includes("GTM-W327944"), "GTM deve ser preservado");
   for (const [path, title] of [
     ["termos-de-uso", "Termos de Uso"],
     ["politica-de-privacidade", "Política de Privacidade"],
   ]) {
     await page.getByRole("link", { name: title, exact: true }).click();
     await page.getByRole("heading", { name: title, exact: true }).waitFor();
-    assert(new URL(page.url()).pathname.startsWith(`/black-livros/${path}`));
+    assert(new URL(page.url()).pathname.startsWith(`${base}${path}`));
     await page.reload({ waitUntil: "networkidle" });
     await page.getByRole("heading", { name: title, exact: true }).waitFor();
     assert.equal(
@@ -69,7 +74,7 @@ try {
     );
   }
   await page.getByRole("link", { name: "Voltar para a oferta" }).click();
-  await page.waitForURL(`${origin}/black-livros/`);
+  await page.waitForURL(`${origin}${base}`);
   for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: 900 });
     await page.reload({ waitUntil: "networkidle" });
@@ -77,7 +82,9 @@ try {
     assert(await page.evaluate(() => document.fonts.check("800 16px Montserrat")));
     assert(await page.evaluate(() => document.fonts.check("700 16px Poppins")));
     const timer = page.getByRole("timer");
-    assert(!(await timer.innerText()).includes("--"), "Contador deve iniciar sem React");
+    if (await timer.count())
+      assert(!(await timer.innerText()).includes("--"), "Contador deve iniciar sem React");
+    else assert(await page.getByText("Oferta encerrada", { exact: true }).isVisible());
     assert(
       await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
       "Sem overflow horizontal",
@@ -108,7 +115,7 @@ try {
   mkdirSync("audit-results", { recursive: true });
   for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: 900 });
-    await page.goto(`${origin}/black-livros/`, { waitUntil: "networkidle" });
+    await page.goto(`${origin}${base}`, { waitUntil: "networkidle" });
     await page.screenshot({ path: `audit-results/page-${width}.png`, fullPage: true });
   }
   assert.deepEqual(errors, [], "Erros JavaScript");
@@ -118,14 +125,20 @@ try {
   );
   if (process.env["LIGHTHOUSE_MODULE"]) {
     const { default: lighthouse } = await import(process.env["LIGHTHOUSE_MODULE"]);
+    const { default: desktopConfig } = await import(
+      new URL("./config/desktop-config.js", pathToFileURL(process.env["LIGHTHOUSE_MODULE"]))
+    );
     for (const mode of ["mobile", "desktop"]) {
-      const result = await lighthouse(`${origin}/black-livros/`, {
-        port: 9222,
-        output: ["json", "html"],
-        logLevel: "error",
-        onlyCategories: ["performance", "accessibility", "best-practices", "seo"],
-        ...(mode === "desktop" ? { preset: "desktop" } : {}),
-      });
+      const result = await lighthouse(
+        `${origin}${base}`,
+        {
+          port: 9222,
+          output: ["json", "html"],
+          logLevel: "error",
+          onlyCategories: ["performance", "accessibility", "best-practices", "seo"],
+        },
+        mode === "desktop" ? desktopConfig : undefined,
+      );
       writeFileSync(`audit-results/lighthouse-${mode}.json`, result.report[0]);
       writeFileSync(`audit-results/lighthouse-${mode}.html`, result.report[1]);
       console.log(
@@ -147,5 +160,5 @@ try {
   }
 } finally {
   await browser.close();
-  server.close();
+  if (server.listening) server.close();
 }

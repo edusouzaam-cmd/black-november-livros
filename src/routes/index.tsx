@@ -1,5 +1,5 @@
+import { mediaUrl } from "@/lib/media";
 import { productionUrl } from "@/lib/site-url";
-import { publicUrl } from "@/lib/site-url";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
 import {
@@ -24,8 +24,8 @@ export const Route = createFileRoute("/")({
         rel: "preload",
         as: "image",
         type: "image/avif",
-        href: publicUrl("/assets/optimized/fundo-industria-960.avif"),
-        imageSrcSet: `${publicUrl("/assets/optimized/fundo-industria-960.avif")} 960w, ${publicUrl("/assets/optimized/fundo-industria-1672.avif")} 1672w`,
+        href: mediaUrl("fundo-industria-960.avif"),
+        imageSrcSet: `${mediaUrl("fundo-industria-960.avif")} 960w, ${mediaUrl("fundo-industria-1672.avif")} 1672w`,
         imageSizes: "100vw",
         fetchPriority: "high",
       },
@@ -33,12 +33,9 @@ export const Route = createFileRoute("/")({
         rel: "preload",
         as: "image",
         type: "image/avif",
-        href: publicUrl("/assets/optimized/black-november-livros-768.avif"),
+        href: mediaUrl("black-november-livros-768.avif"),
         imageSrcSet: [480, 768, 1536]
-          .map(
-            (width) =>
-              `${publicUrl(`/assets/optimized/black-november-livros-${width}.avif`)} ${width}w`,
-          )
+          .map((width) => `${mediaUrl(`black-november-livros-${width}.avif`)} ${width}w`)
           .join(", "),
         imageSizes: "(min-width: 800px) 768px, calc(100vw - 32px)",
         fetchPriority: "high",
@@ -72,6 +69,7 @@ type Book = {
   image: string;
   imageAlt: string;
   imageSrcSet: string;
+  imageAvifSrcSet: string;
   pages: number;
   chapters: string[];
   price: string;
@@ -85,11 +83,12 @@ const BOOKS: Book[] = [
     shortTitle: "PCM Descomplicado",
     subtitle:
       "Uma metodologia passo a passo para implantar e gerenciar um setor de Planejamento e Controle da Manutenção.",
-    image: publicUrl("/assets/optimized/pcm-descomplicado-4a-640.webp"),
+    image: mediaUrl("pcm-descomplicado-4a-640.webp"),
+    imageAvifSrcSet: [320, 640, 1024]
+      .map((width) => `${mediaUrl(`pcm-descomplicado-4a-${width}.avif`)} ${width}w`)
+      .join(", "),
     imageSrcSet: [320, 640, 1024]
-      .map(
-        (width) => `${publicUrl(`/assets/optimized/pcm-descomplicado-4a-${width}.webp`)} ${width}w`,
-      )
+      .map((width) => `${mediaUrl(`pcm-descomplicado-4a-${width}.webp`)} ${width}w`)
       .join(", "),
     imageAlt: "Livro PCM Descomplicado, quarta edição",
     pages: 290,
@@ -116,12 +115,12 @@ const BOOKS: Book[] = [
     shortTitle: "Gestão Financeira da Manutenção",
     subtitle:
       "Aprenda a planejar orçamentos, controlar custos e tomar decisões financeiras estratégicas na manutenção.",
-    image: publicUrl("/assets/optimized/gestao-financeira-manutencao-640.webp"),
+    image: mediaUrl("gestao-financeira-manutencao-640.webp"),
+    imageAvifSrcSet: [320, 640, 1024]
+      .map((width) => `${mediaUrl(`gestao-financeira-manutencao-${width}.avif`)} ${width}w`)
+      .join(", "),
     imageSrcSet: [320, 640, 1024]
-      .map(
-        (width) =>
-          `${publicUrl(`/assets/optimized/gestao-financeira-manutencao-${width}.webp`)} ${width}w`,
-      )
+      .map((width) => `${mediaUrl(`gestao-financeira-manutencao-${width}.webp`)} ${width}w`)
       .join(", "),
     imageAlt: "Livro Gestão Financeira da Manutenção, segunda edição",
     pages: 248,
@@ -143,12 +142,12 @@ const BOOKS: Book[] = [
     title: "Não Existe Melhoria de Processos sem o Desenvolvimento de Pessoas",
     shortTitle: "Não Existe Melhoria de Processos",
     subtitle: "Um manual para desenvolver pessoas e melhorar processos no ambiente de manutenção.",
-    image: publicUrl("/assets/optimized/nao-existe-melhoria-pessoas-640.webp"),
+    image: mediaUrl("nao-existe-melhoria-pessoas-640.webp"),
+    imageAvifSrcSet: [320, 640, 1024]
+      .map((width) => `${mediaUrl(`nao-existe-melhoria-pessoas-${width}.avif`)} ${width}w`)
+      .join(", "),
     imageSrcSet: [320, 640, 1024]
-      .map(
-        (width) =>
-          `${publicUrl(`/assets/optimized/nao-existe-melhoria-pessoas-${width}.webp`)} ${width}w`,
-      )
+      .map((width) => `${mediaUrl(`nao-existe-melhoria-pessoas-${width}.webp`)} ${width}w`)
       .join(", "),
     imageAlt: "Livro Não Existe Melhoria de Processos sem o Desenvolvimento de Pessoas",
     pages: 219,
@@ -325,13 +324,14 @@ function Hero() {
       {/* Foto decorativa em P&B, bem apagada, só para dar clima de indústria. */}
       <picture className="contents">
         <source
+          className="hidden"
           type="image/avif"
-          srcSet={`${publicUrl("/assets/optimized/fundo-industria-960.avif")} 960w, ${publicUrl("/assets/optimized/fundo-industria-1672.avif")} 1672w`}
+          srcSet={`${mediaUrl("fundo-industria-960.avif")} 960w, ${mediaUrl("fundo-industria-1672.avif")} 1672w`}
           sizes="100vw"
         />
         <img
-          src={publicUrl("/assets/optimized/fundo-industria-1672.webp")}
-          srcSet={`${publicUrl("/assets/optimized/fundo-industria-960.webp")} 960w, ${publicUrl("/assets/optimized/fundo-industria-1672.webp")} 1672w`}
+          src={mediaUrl("fundo-industria-1672.webp")}
+          srcSet={`${mediaUrl("fundo-industria-960.webp")} 960w, ${mediaUrl("fundo-industria-1672.webp")} 1672w`}
           sizes="100vw"
           width={1672}
           height={941}
@@ -352,22 +352,17 @@ function Hero() {
       <Countdown />
       <picture className="contents">
         <source
+          className="hidden"
           type="image/avif"
           srcSet={[480, 768, 1536]
-            .map(
-              (width) =>
-                `${publicUrl(`/assets/optimized/black-november-livros-${width}.avif`)} ${width}w`,
-            )
+            .map((width) => `${mediaUrl(`black-november-livros-${width}.avif`)} ${width}w`)
             .join(", ")}
           sizes="(min-width: 800px) 768px, calc(100vw - 32px)"
         />
         <img
-          src={publicUrl("/assets/optimized/black-november-livros-768.webp")}
+          src={mediaUrl("black-november-livros-768.webp")}
           srcSet={[480, 768, 1536]
-            .map(
-              (width) =>
-                `${publicUrl(`/assets/optimized/black-november-livros-${width}.webp`)} ${width}w`,
-            )
+            .map((width) => `${mediaUrl(`black-november-livros-${width}.webp`)} ${width}w`)
             .join(", ")}
           sizes="(min-width: 800px) 768px, calc(100vw - 32px)"
           decoding="async"
@@ -410,17 +405,25 @@ function BookSection({ book, index }: { book: Book; index: number }) {
         className={`grid overflow-hidden rounded-2xl border border-[#0058a2]/60 bg-[#000c17]/60 md:grid-cols-2 ${reverse ? "md:[&>*:first-child]:order-2" : ""}`}
       >
         <div className="flex flex-col items-center justify-center gap-4 bg-[radial-gradient(#00264f,#00192f)] p-8">
-          <img
-            src={book.image}
-            srcSet={book.imageSrcSet}
-            sizes="(min-width: 416px) 320px, calc(100vw - 98px)"
-            width={640}
-            height={640}
-            decoding="async"
-            alt={book.imageAlt}
-            loading="lazy"
-            className="aspect-square w-full max-w-xs object-cover"
-          />
+          <picture className="contents">
+            <source
+              className="hidden"
+              type="image/avif"
+              srcSet={book.imageAvifSrcSet}
+              sizes="(min-width: 416px) 320px, calc(100vw - 98px)"
+            />
+            <img
+              src={book.image}
+              srcSet={book.imageSrcSet}
+              sizes="(min-width: 416px) 320px, calc(100vw - 98px)"
+              width={640}
+              height={640}
+              decoding="async"
+              alt={book.imageAlt}
+              loading="lazy"
+              className="aspect-square w-full max-w-xs object-cover"
+            />
+          </picture>
           <ul className="space-y-1 text-white/90">
             <li className="flex items-center gap-2">
               <BookOpen className="size-4 text-[#00aeef]" aria-hidden /> {book.pages} páginas ·{" "}
@@ -464,17 +467,25 @@ function BonusSection() {
         />
         <div className="grid items-center gap-10 md:grid-cols-2">
           <div className="text-center">
-            <img
-              src={publicUrl("/assets/optimized/curso-planejadores-896.webp")}
-              srcSet={`${publicUrl("/assets/optimized/curso-planejadores-448.webp")} 448w, ${publicUrl("/assets/optimized/curso-planejadores-896.webp")} 896w`}
-              sizes="(min-width: 480px) 448px, calc(100vw - 32px)"
-              decoding="async"
-              alt="Curso Formação para Planejadores de Manutenção aberto em um notebook"
-              loading="lazy"
-              width={1024}
-              height={819}
-              className="mx-auto w-full max-w-md"
-            />
+            <picture className="contents">
+              <source
+                className="hidden"
+                type="image/avif"
+                srcSet={`${mediaUrl("curso-planejadores-448.avif")} 448w, ${mediaUrl("curso-planejadores-896.avif")} 896w`}
+                sizes="(min-width: 480px) 448px, calc(100vw - 32px)"
+              />
+              <img
+                src={mediaUrl("curso-planejadores-896.webp")}
+                srcSet={`${mediaUrl("curso-planejadores-448.webp")} 448w, ${mediaUrl("curso-planejadores-896.webp")} 896w`}
+                sizes="(min-width: 480px) 448px, calc(100vw - 32px)"
+                decoding="async"
+                alt="Curso Formação para Planejadores de Manutenção aberto em um notebook"
+                loading="lazy"
+                width={1024}
+                height={819}
+                className="mx-auto w-full max-w-md"
+              />
+            </picture>
             <ul className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2 text-white">
               <li className="flex items-center gap-2">
                 <Clock className="size-4 text-[#00aeef]" aria-hidden /> 20 horas
@@ -561,17 +572,25 @@ function SeparateBooks() {
               key={book.id}
               className="flex flex-col overflow-hidden rounded-2xl bg-white text-[#10263b] shadow-xl"
             >
-              <img
-                src={book.image}
-                srcSet={book.imageSrcSet}
-                sizes="(min-width: 1024px) 326px, (min-width: 640px) calc((100vw - 56px) / 2), calc(100vw - 32px)"
-                width={640}
-                height={640}
-                decoding="async"
-                alt={book.imageAlt}
-                loading="lazy"
-                className="aspect-square w-full bg-[#f4f6f8] object-cover p-3"
-              />
+              <picture className="contents">
+                <source
+                  className="hidden"
+                  type="image/avif"
+                  srcSet={book.imageAvifSrcSet}
+                  sizes="(min-width: 1024px) 326px, (min-width: 640px) calc((100vw - 56px) / 2), calc(100vw - 32px)"
+                />
+                <img
+                  src={book.image}
+                  srcSet={book.imageSrcSet}
+                  sizes="(min-width: 1024px) 326px, (min-width: 640px) calc((100vw - 56px) / 2), calc(100vw - 32px)"
+                  width={640}
+                  height={640}
+                  decoding="async"
+                  alt={book.imageAlt}
+                  loading="lazy"
+                  className="aspect-square w-full bg-[#f4f6f8] object-cover p-3"
+                />
+              </picture>
               <div className="flex flex-1 flex-col p-5">
                 <h3 className="text-lg font-bold leading-snug">{book.title}</h3>
                 <p className="mt-1 text-sm text-[#47586a]">Autor: Jhonata Teles</p>

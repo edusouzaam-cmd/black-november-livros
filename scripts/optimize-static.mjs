@@ -1,34 +1,16 @@
+import { countdownBootstrap, optimizeHtml } from "../src/lib/static-html.mjs";
 import { createHash } from "node:crypto";
 import { readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 
 // KingHost serves the prerendered HTML directly. Every interaction except the
-// countdown is native HTML (anchors and details); React remains in Lovable.
+// countdown is native HTML (anchors and details); React remains in the editor.
 export function optimizeStatic(root) {
-  const countdown = `(()=>{const timer=document.querySelector('[data-offer-deadline]');if(!timer)return;const deadline=Number(timer.dataset.offerDeadline),parts=timer.querySelectorAll('[data-countdown-part]');let interval;function update(){const left=Math.max(0,deadline-Date.now());if(!left){const ended=document.createElement('p');ended.className='font-semibold text-[#00aeef]';ended.textContent='Oferta encerrada';timer.replaceWith(ended);clearInterval(interval);return}const values=[Math.floor(left/86400000),Math.floor(left/3600000)%24,Math.floor(left/60000)%60,Math.floor(left/1000)%60];parts.forEach((part,i)=>{const value=String(values[i]).padStart(2,'0');if(part.textContent!==value)part.textContent=value})}update();if(timer.isConnected)interval=setInterval(update,1000);document.addEventListener('visibilitychange',()=>{clearInterval(interval);if(!document.hidden&&timer.isConnected){update();if(timer.isConnected)interval=setInterval(update,1000)}})})();`;
+  const countdown = countdownBootstrap;
   const name = `countdown-${createHash("sha256").update(countdown).digest("hex").slice(0, 12)}.js`;
   const pages = ["index.html", "termos-de-uso/index.html", "politica-de-privacidade/index.html"];
   for (const page of pages) {
     let html = readFileSync(`${root}/${page}`, "utf8");
-    html = html.replace(/<link\b[^>]*rel="modulepreload"[^>]*\/?\s*>/g, "");
-    html = html.replace(/<script\b([^>]*)>([\s\S]*?)<\/script>/g, (tag, attrs, body) => {
-      if (body.includes("GTM-W327944")) return tag; // Preserve analytics and event timing.
-      if (/type="application\/ld\+json"/.test(attrs)) return tag;
-      if (
-        /type="module"/.test(attrs) ||
-        /data-tsr-stream-part/.test(attrs) ||
-        body.includes("tsr-scroll-restoration") ||
-        body.includes("$tsr-stream-boundary")
-      )
-        return "";
-      throw new Error(`Script desconhecido em ${page}; revisar antes de remover.`);
-    });
-    if (page === "index.html") {
-      if (!html.includes("data-offer-deadline")) throw new Error("Contador não encontrado.");
-      html = html.replace(
-        "</body>",
-        `<script defer src="/black-livros/assets/${name}"></script></body>`,
-      );
-    }
+    html = optimizeHtml(html, `<script defer src="/black-livros/assets/${name}"></script>`);
     writeFileSync(`${root}/${page}`, html);
   }
   writeFileSync(`${root}/assets/${name}`, countdown);
