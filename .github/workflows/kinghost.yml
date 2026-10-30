@@ -62,6 +62,8 @@ jobs:
           npm install --prefix "$RUNNER_TEMP/lovable-browser" playwright@1.58.2 lighthouse@12.8.2
           node "$RUNNER_TEMP/lovable-browser/node_modules/playwright/cli.js" install --with-deps chromium
           PLAYWRIGHT_MODULE="$RUNNER_TEMP/lovable-browser/node_modules/playwright/index.mjs" LIGHTHOUSE_MODULE="$RUNNER_TEMP/lovable-browser/node_modules/lighthouse/core/index.js" node scripts/check-lovable.mjs
+      - name: Verificar campanhas na experiência worker
+        run: PLAYWRIGHT_MODULE="$RUNNER_TEMP/lovable-browser/node_modules/playwright/index.mjs" node scripts/check-analytics-worker.mjs
       - uses: actions/upload-artifact@v7.0.2
         if: always()
         with:

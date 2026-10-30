@@ -11,6 +11,8 @@ rmSync(destination, { recursive: true, force: true });
 mkdirSync(destination);
 cpSync(source, destination, { recursive: true });
 optimizeStatic(destination);
+// The worker experiment needs a server proxy and is only available on Lovable.
+rmSync(`${destination}/~partytown`, { recursive: true, force: true });
 mkdirSync(`${destination}/licenses`, { recursive: true });
 for (const family of ["Montserrat", "Poppins"]) {
   cpSync(`src/fonts/OFL-${family}.txt`, `${destination}/licenses/OFL-${family}.txt`);

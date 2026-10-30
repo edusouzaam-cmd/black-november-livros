@@ -35,3 +35,6 @@ dist-ssr
 kinghost-package/
 
 audit-results/
+
+# Generated worker library, copied from the pinned dependency during builds
+public/~partytown/
