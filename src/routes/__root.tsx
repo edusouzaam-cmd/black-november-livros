@@ -12,6 +12,7 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import inlineCss from "../styles.css?inline";
 import montserratFont from "../fonts/montserrat-latin.woff2?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
@@ -99,10 +100,7 @@ export const Route = createRootRoute({
       { property: "og:locale", content: "pt_BR" },
     ],
     links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
+      ...(import.meta.env.PROD ? [] : [{ rel: "stylesheet", href: appCss }]),
       { rel: "icon", href: publicUrl("favicon.ico"), sizes: "48x48" },
       { rel: "icon", href: publicUrl("favicon.png"), type: "image/png", sizes: "512x512" },
       { rel: "apple-touch-icon", href: publicUrl("apple-touch-icon.png") },
@@ -132,6 +130,7 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="pt-BR">
       <head>
         <HeadContent />
+        {import.meta.env.PROD && <style dangerouslySetInnerHTML={{ __html: inlineCss }} />}
       </head>
       <body>
         {children}
