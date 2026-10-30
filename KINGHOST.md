@@ -52,11 +52,11 @@ A primeira dobra usa AVIF quando suportado, com fallback WebP, e preloads respon
 para o fundo e o combo. O fundo também recebe prioridade alta: foi o elemento LCP
 identificado no relatório mobile fornecido em 30/10/2026.
 
-O GTM mantém o mesmo ID e enfileira o evento inicial imediatamente, mas injeta o
-container após o carregamento, em um intervalo ocioso (com timeout de 1,5 segundo),
-ou antes disso no primeiro toque/clique/tecla. Isso evita disputar a primeira
-renderização com Analytics, Google Ads e Meta. As tags passam a inicializar mais tarde
-em visitas sem interação; o conteúdo, as fontes e os links permanecem iguais.
+O GTM mantém o mesmo ID, a fila de eventos e o carregamento assíncrono original.
+Seu download tem prioridade baixa para não disputar rede com imagens/fontes.
+O agendamento pós-carregamento foi retirado após o teste público mostrar variação
+alta de bloqueio por tags nessa fase. Nenhuma tag de campanha foi desativada.
+
 O CSS inclui apenas as classes das páginas usadas, sem gerar estilos dos componentes
 UI de exemplo. Arquivos de imagem e scripts não referenciados são excluídos do pacote.
 
