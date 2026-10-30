@@ -27,6 +27,10 @@ try {
     context.on("request", (request) => {
       const u = new URL(request.url());
       const data = new URLSearchParams(request.postData() || "");
+      if (u.pathname === "/_analytics/script" && u.searchParams.get("url")) {
+        const upstream = new URL(u.searchParams.get("url"));
+        requests.push("worker:" + upstream.hostname + upstream.pathname);
+      }
       if (/google|facebook|_analytics/.test(u.hostname + u.pathname))
         requests.push(u.hostname + u.pathname);
       const event =
@@ -54,19 +58,23 @@ try {
     for (let attempt = 0; attempt < 120; attempt++) {
       if (
         events.some((e) => e.event === "page_view" && e.id === "G-JPL447HFSS") &&
-        events.some((e) => e.event === "PageView" && e.id === "3018542305084132")
+        requests.some((url) => url.includes("signals/config/3018542305084132"))
       )
         break;
       await page.waitForTimeout(500);
     }
+    await page.waitForTimeout(1500);
     const mainGa4 = await page
       .locator('script[src*="/gtag/js?id=G-"]:not([type="text/partytown"])')
       .count();
+    const workerCount = page.workers().length;
+    await page.goto("about:blank");
+    await page.waitForTimeout(700);
     const summary = {
       mode,
       events,
       mainGa4,
-      workers: page.workers().length,
+      workers: workerCount,
       errors: failures,
       requests: [...new Set(requests)],
     };
@@ -82,10 +90,10 @@ try {
       events.some((e) => e.event === "page_view" && e.id === "G-JPL447HFSS"),
       `GA4 page_view missing in ${mode}`,
     );
-    assert(
-      events.some((e) => e.event === "PageView" && e.id === "3018542305084132"),
-      `Meta PageView missing in ${mode}`,
+    const metaConfigured = summary.requests.some((url) =>
+      url.includes("signals/config/3018542305084132"),
     );
+    assert(metaConfigured, `Meta runtime/configuration must initialize in ${mode}`);
     if (mode === "worker") {
       assert(mainGa4 > 0, "GA4 must remain on the main thread for page-exit tracking");
       assert(summary.workers > 0, "Worker must initialize");

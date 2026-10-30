@@ -56,14 +56,22 @@ describe("Analytics worker asset boundary", () => {
 });
 
 describe("Opt-in worker HTML", () => {
-  it("replaces exactly one GTM loader while keeping page markup", () => {
+  it("preserves the GTM loader and page markup while offloading Meta", () => {
     const result = useWorkerAnalytics(
       "<html><head><script>/* GTM-W327944 */</script></head><body><main>Oferta</main></body></html>",
     );
     expect(result).toContain("<main>Oferta</main>");
     expect(result).toContain('type="text/partytown"');
     expect(result).toContain("analytics-worker-bootstrap");
-    expect(result).toContain("loadScriptsOnMainThread");
+    expect(result).toContain("__metaOriginalStub");
+  });
+  it("generates valid browser scripts and cannot install a second worker bootstrap", () => {
+    const result = useWorkerAnalytics(
+      "<html><head><script>/* GTM-W327944 */</script></head><body>Oferta</body></html>",
+    );
+    for (const match of result.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/g))
+      expect(() => new Function(match[1] || "")).not.toThrow();
+    expect(useWorkerAnalytics(result)).toBe(result);
   });
   it("requires one unambiguous container before changing analytics", () => {
     expect(() => useWorkerAnalytics("<html><body>Sem tags</body></html>")).toThrow();

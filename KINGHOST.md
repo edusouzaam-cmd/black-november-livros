@@ -76,7 +76,7 @@ a configuração das campanhas no GTM.
 ## Experiência isolada de analytics
 
 `/_analytics/preview` é uma rota de verificação da produção Lovable. Ela renderiza
-a mesma oferta com GTM/Ads/Meta no Partytown, mantendo o script GA4 na thread principal
+a mesma oferta com Meta no Partytown, mantendo GTM/Google/GA4 na thread principal
 para preservar eventos de saída. A página principal mantém o carregamento anterior
 até os testes de `page_view` e `PageView` confirmarem a compatibilidade.
 

@@ -52,6 +52,14 @@ export default {
       const requestUrl = new URL(request.url);
       if (requestUrl.pathname === "/_analytics/script")
         return await analyticsAssetResponse(request);
+      if (requestUrl.pathname === "/_analytics/meta-placeholder.js") {
+        return new Response("/* Meta runtime is hosted by the analytics worker. */", {
+          headers: {
+            "Content-Type": "application/javascript; charset=utf-8",
+            "Cache-Control": "public, max-age=300",
+          },
+        });
+      }
       const preview = requestUrl.pathname === "/_analytics/preview";
       const pageUrl = new URL(requestUrl);
       if (preview) {
