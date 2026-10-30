@@ -1,5 +1,6 @@
 import { cpSync, existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { optimizeStatic } from "./optimize-static.mjs";
 
 // TanStack Start emits the prerendered client to dist/client. Nitro may copy
 // it to .output/public; never package its server bundle.
@@ -9,9 +10,35 @@ const destination = "kinghost-package";
 rmSync(destination, { recursive: true, force: true });
 mkdirSync(destination);
 cpSync(source, destination, { recursive: true });
+optimizeStatic(destination);
+mkdirSync(`${destination}/licenses`, { recursive: true });
+for (const family of ["Montserrat", "Poppins"]) {
+  cpSync(`src/fonts/OFL-${family}.txt`, `${destination}/licenses/OFL-${family}.txt`);
+}
 writeFileSync(
   `${destination}/htaccess`,
-  `RewriteEngine On
+  `# Ativar no servidor renomeando htaccess para .htaccess.
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json image/svg+xml
+</IfModule>
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 1 month"
+  ExpiresByType application/javascript "access plus 1 month"
+  ExpiresByType text/javascript "access plus 1 month"
+  ExpiresByType font/woff2 "access plus 1 year"
+  ExpiresByType image/webp "access plus 1 month"
+  ExpiresByType image/png "access plus 1 month"
+  ExpiresByType image/jpeg "access plus 1 month"
+  ExpiresByType image/x-icon "access plus 1 month"
+</IfModule>
+<IfModule mod_headers.c>
+  <FilesMatch "\\.html$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>
+
+RewriteEngine On
 RewriteBase /black-livros/
 
 RewriteCond %{REQUEST_FILENAME} -f [OR]

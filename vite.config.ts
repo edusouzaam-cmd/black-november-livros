@@ -9,9 +9,12 @@ import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 const kinghost = process.env["KINGHOST_BUILD"] === "1";
 
 export default defineConfig({
+  vite: {
+    server: { allowedHosts: ["terminal.local"] },
+    ...(kinghost ? { base: "/black-livros/" } : {}),
+  },
   ...(kinghost
     ? {
-        vite: { base: "/black-livros/" },
         nitro: false,
       }
     : {}),

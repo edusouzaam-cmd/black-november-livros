@@ -46,6 +46,7 @@ type Book = {
   subtitle: string;
   image: string;
   imageAlt: string;
+  imageSrcSet: string;
   pages: number;
   chapters: string[];
   price: string;
@@ -59,7 +60,12 @@ const BOOKS: Book[] = [
     shortTitle: "PCM Descomplicado",
     subtitle:
       "Uma metodologia passo a passo para implantar e gerenciar um setor de Planejamento e Controle da Manutenção.",
-    image: publicUrl("/assets/books/pcm-descomplicado-4a.webp"),
+    image: publicUrl("/assets/optimized/pcm-descomplicado-4a-640.webp"),
+    imageSrcSet: [320, 640, 1024]
+      .map(
+        (width) => `${publicUrl(`/assets/optimized/pcm-descomplicado-4a-${width}.webp`)} ${width}w`,
+      )
+      .join(", "),
     imageAlt: "Livro PCM Descomplicado, quarta edição",
     pages: 290,
     chapters: [
@@ -85,7 +91,13 @@ const BOOKS: Book[] = [
     shortTitle: "Gestão Financeira da Manutenção",
     subtitle:
       "Aprenda a planejar orçamentos, controlar custos e tomar decisões financeiras estratégicas na manutenção.",
-    image: publicUrl("/assets/books/gestao-financeira-manutencao.webp"),
+    image: publicUrl("/assets/optimized/gestao-financeira-manutencao-640.webp"),
+    imageSrcSet: [320, 640, 1024]
+      .map(
+        (width) =>
+          `${publicUrl(`/assets/optimized/gestao-financeira-manutencao-${width}.webp`)} ${width}w`,
+      )
+      .join(", "),
     imageAlt: "Livro Gestão Financeira da Manutenção, segunda edição",
     pages: 248,
     chapters: [
@@ -106,7 +118,13 @@ const BOOKS: Book[] = [
     title: "Não Existe Melhoria de Processos sem o Desenvolvimento de Pessoas",
     shortTitle: "Não Existe Melhoria de Processos",
     subtitle: "Um manual para desenvolver pessoas e melhorar processos no ambiente de manutenção.",
-    image: publicUrl("/assets/books/nao-existe-melhoria-pessoas.webp"),
+    image: publicUrl("/assets/optimized/nao-existe-melhoria-pessoas-640.webp"),
+    imageSrcSet: [320, 640, 1024]
+      .map(
+        (width) =>
+          `${publicUrl(`/assets/optimized/nao-existe-melhoria-pessoas-${width}.webp`)} ${width}w`,
+      )
+      .join(", "),
     imageAlt: "Livro Não Existe Melhoria de Processos sem o Desenvolvimento de Pessoas",
     pages: 219,
     chapters: [
@@ -230,15 +248,19 @@ function Countdown() {
   return (
     <div
       role="timer"
+      data-offer-deadline={DEADLINE}
       aria-label="Tempo restante da oferta Black November"
       className="flex justify-center gap-2 sm:gap-3"
     >
-      {parts.map((p) => (
+      {parts.map((p, index) => (
         <div
           key={p.label}
           className="flex w-16 flex-col items-center rounded-xl border border-[#00aeef]/35 bg-gradient-to-b from-[#072943] to-[#03111f] py-2 shadow-lg sm:w-20 sm:py-3"
         >
-          <span className="text-2xl font-bold tabular-nums text-white sm:text-4xl">
+          <span
+            data-countdown-part={index}
+            className="text-2xl font-bold tabular-nums text-white sm:text-4xl"
+          >
             {ready ? String(p.value).padStart(2, "0") : "--"}
           </span>
           <span className="text-[10px] uppercase tracking-widest text-white/70">{p.label}</span>
@@ -277,7 +299,13 @@ function Hero() {
     <section className="relative isolate overflow-hidden bg-[radial-gradient(ellipse_at_top,#00325b_0%,#00182b_55%,#000_100%)] px-4 pb-16 pt-10 text-center">
       {/* Foto decorativa em P&B, bem apagada, só para dar clima de indústria. */}
       <img
-        src={publicUrl("/assets/fundo-industria.jpg")}
+        src={publicUrl("/assets/optimized/fundo-industria-1672.webp")}
+        srcSet={`${publicUrl("/assets/optimized/fundo-industria-960.webp")} 960w, ${publicUrl("/assets/optimized/fundo-industria-1672.webp")} 1672w`}
+        sizes="100vw"
+        width={1672}
+        height={941}
+        decoding="async"
+        fetchPriority="low"
         alt=""
         aria-hidden
         className="pointer-events-none absolute inset-0 -z-10 h-full w-full object-cover opacity-[0.22] mix-blend-luminosity"
@@ -291,10 +319,19 @@ function Hero() {
       </p>
       <Countdown />
       <img
-        src={publicUrl("/assets/black-november-livros.webp")}
+        src={publicUrl("/assets/optimized/black-november-livros-768.webp")}
+        srcSet={[480, 768, 1536]
+          .map(
+            (width) =>
+              `${publicUrl(`/assets/optimized/black-november-livros-${width}.webp`)} ${width}w`,
+          )
+          .join(", ")}
+        sizes="(min-width: 800px) 768px, calc(100vw - 32px)"
+        decoding="async"
         alt="Livros PCM Descomplicado, Não Existe Melhoria de Processos e Gestão Financeira da Manutenção com o selo Black November"
-        width={1680}
-        height={945}
+        width={1653}
+        height={952}
+        style={{ aspectRatio: "1653 / 952" }}
         fetchPriority="high"
         className="mx-auto mt-8 w-full max-w-3xl drop-shadow-[0_18px_34px_rgba(0,0,0,0.45)] motion-safe:animate-[bn-float_7s_ease-in-out_infinite]"
       />
@@ -331,6 +368,11 @@ function BookSection({ book, index }: { book: Book; index: number }) {
         <div className="flex flex-col items-center justify-center gap-4 bg-[radial-gradient(#00264f,#00192f)] p-8">
           <img
             src={book.image}
+            srcSet={book.imageSrcSet}
+            sizes="(min-width: 416px) 320px, calc(100vw - 98px)"
+            width={640}
+            height={640}
+            decoding="async"
             alt={book.imageAlt}
             loading="lazy"
             className="aspect-square w-full max-w-xs object-cover"
@@ -379,7 +421,10 @@ function BonusSection() {
         <div className="grid items-center gap-10 md:grid-cols-2">
           <div className="text-center">
             <img
-              src={publicUrl("/assets/curso-planejadores.png")}
+              src={publicUrl("/assets/optimized/curso-planejadores-896.webp")}
+              srcSet={`${publicUrl("/assets/optimized/curso-planejadores-448.webp")} 448w, ${publicUrl("/assets/optimized/curso-planejadores-896.webp")} 896w`}
+              sizes="(min-width: 480px) 448px, calc(100vw - 32px)"
+              decoding="async"
               alt="Curso Formação para Planejadores de Manutenção aberto em um notebook"
               loading="lazy"
               width={1024}
@@ -474,6 +519,11 @@ function SeparateBooks() {
             >
               <img
                 src={book.image}
+                srcSet={book.imageSrcSet}
+                sizes="(min-width: 1024px) 326px, (min-width: 640px) calc((100vw - 56px) / 2), calc(100vw - 32px)"
+                width={640}
+                height={640}
+                decoding="async"
                 alt={book.imageAlt}
                 loading="lazy"
                 className="aspect-square w-full bg-[#f4f6f8] object-cover p-3"

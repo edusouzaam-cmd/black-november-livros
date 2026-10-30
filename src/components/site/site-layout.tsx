@@ -17,10 +17,14 @@ export function SiteHeader() {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4">
         <Link to="/" aria-label="Engeteles, página inicial">
           <img
-            src={publicUrl("/assets/logo-engeteles.png")}
+            src={publicUrl("/assets/optimized/logo-engeteles-240.webp")}
+            srcSet={`${publicUrl("/assets/optimized/logo-engeteles-240.webp")} 240w, ${publicUrl("/assets/optimized/logo-engeteles-360.webp")} 360w`}
+            sizes="(min-width: 640px) 119px, 106px"
+            decoding="async"
             alt="Engeteles"
             width={1092}
             height={331}
+            style={{ aspectRatio: "1092 / 331" }}
             className="h-8 w-auto sm:h-9"
           />
         </Link>

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
-import { readFileSync, statSync } from "node:fs";
+import { readFileSync, statSync, mkdirSync, writeFileSync } from "node:fs";
 import { resolve, extname } from "node:path";
 const { chromium } = await import(process.env["PLAYWRIGHT_MODULE"] || "playwright");
 const root = resolve("kinghost-package");
@@ -32,6 +32,7 @@ const server = createServer((req, res) => {
         ".png": "image/png",
         ".jpg": "image/jpeg",
         ".ico": "image/x-icon",
+        ".woff2": "font/woff2",
       }[extname(file)] || "application/octet-stream";
     res.writeHead(200, { "Content-Type": type }).end(readFileSync(file));
   } catch {
@@ -40,7 +41,7 @@ const server = createServer((req, res) => {
 });
 await new Promise((done) => server.listen(0, "127.0.0.1", done));
 const origin = `http://127.0.0.1:${server.address().port}`;
-const browser = await chromium.launch({ headless: true });
+const browser = await chromium.launch({ headless: true, args: ["--remote-debugging-port=9222"] });
 try {
   const page = await browser.newPage();
   const errors = [],
@@ -71,6 +72,20 @@ try {
   for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: 900 });
     await page.reload({ waitUntil: "networkidle" });
+    await page.evaluate(() => document.fonts.ready);
+    assert(await page.evaluate(() => document.fonts.check("800 16px Montserrat")));
+    assert(await page.evaluate(() => document.fonts.check("700 16px Poppins")));
+    const timer = page.getByRole("timer");
+    assert(!(await timer.innerText()).includes("--"), "Contador deve iniciar sem React");
+    assert(
+      await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+      "Sem overflow horizontal",
+    );
+    await page.getByText("Por que está tão barato?", { exact: true }).click();
+    assert((await page.locator("details").first().getAttribute("open")) !== null, "FAQ deve abrir");
+    await page.getByText("Por que está tão barato?", { exact: true }).click();
+    await page.getByRole("link", { name: "Comprar combo", exact: true }).click();
+    assert(new URL(page.url()).hash === "#oferta");
     await page.evaluate(async () => {
       for (const img of document.images) {
         img.loading = "eager";
@@ -89,11 +104,46 @@ try {
       true,
     );
   }
+  mkdirSync("audit-results", { recursive: true });
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto(`${origin}/black-livros/`, { waitUntil: "networkidle" });
+    await page.screenshot({ path: `audit-results/page-${width}.png`, fullPage: true });
+  }
   assert.deepEqual(errors, [], "Erros JavaScript");
   assert.deepEqual(missing, [], "Recursos locais com erro HTTP");
   console.log(
     "OK: navegação, atualização direta das subpáginas, canonical, imagens e checkout em desktop/mobile.",
   );
+  if (process.env["LIGHTHOUSE_MODULE"]) {
+    const { default: lighthouse } = await import(process.env["LIGHTHOUSE_MODULE"]);
+    for (const mode of ["mobile", "desktop"]) {
+      const result = await lighthouse(`${origin}/black-livros/`, {
+        port: 9222,
+        output: ["json", "html"],
+        logLevel: "error",
+        onlyCategories: ["performance", "accessibility", "best-practices", "seo"],
+        ...(mode === "desktop" ? { preset: "desktop" } : {}),
+      });
+      writeFileSync(`audit-results/lighthouse-${mode}.json`, result.report[0]);
+      writeFileSync(`audit-results/lighthouse-${mode}.html`, result.report[1]);
+      console.log(
+        `Lighthouse ${mode}:`,
+        Object.fromEntries(
+          Object.entries(result.lhr.categories).map(([key, value]) => [
+            key,
+            Math.round(value.score * 100),
+          ]),
+        ),
+      );
+      console.log(
+        "Auditorias pendentes:",
+        Object.values(result.lhr.audits)
+          .filter((audit) => audit.score !== null && audit.score < 1)
+          .map((audit) => ({ id: audit.id, value: audit.displayValue })),
+      );
+    }
+  }
 } finally {
   await browser.close();
   server.close();

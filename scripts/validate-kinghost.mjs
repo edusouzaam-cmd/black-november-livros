@@ -35,7 +35,8 @@ for (const file of files) {
 for (const file of walk("public")) {
   if (file === "public/robots.txt") continue;
   const target = `${root}/${file.slice(7)}`;
-  assert(existsSync(target), `Arquivo público ausente: ${file}`);
+  // Assets no longer referenced by the static pages are intentionally excluded.
+  if (!existsSync(target)) continue;
   assert.equal(
     readFileSync(target).compare(readFileSync(file)),
     0,
@@ -72,6 +73,18 @@ for (const page of pages) {
   assert(html.includes(`${base}favicon.ico`));
   for (const match of html.matchAll(/(?:src|href)="([^"]+)"/g)) checkUrl(match[1], path);
   assert(html.includes("GTM-W327944"), "GTM deve ser preservado");
+  assert(
+    !/type="module"|rel="modulepreload"|data-tsr-stream-part/.test(html),
+    "Hidratação não deve ser enviada à KingHost",
+  );
+  assert(!html.includes("fonts.googleapis.com"), "Fontes devem ser locais");
+  for (const match of html.matchAll(/srcSet="([^"]+)"/gi)) {
+    for (const candidate of match[1].split(",")) checkUrl(candidate.trim().split(/\s+/)[0], path);
+  }
+  if (!page) {
+    assert(html.includes("data-offer-deadline"));
+    assert(/src="\/black-livros\/assets\/countdown-[a-f0-9]+\.js"/.test(html));
+  }
   assert(html.includes("Termos de Uso") && html.includes("Política de Privacidade"));
 }
 for (const file of files.filter((f) => f.endsWith(".css"))) {

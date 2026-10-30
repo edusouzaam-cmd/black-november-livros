@@ -33,3 +33,5 @@ dist-ssr
 
 # Pacote gerado para publicação manual
 kinghost-package/
+
+audit-results/
