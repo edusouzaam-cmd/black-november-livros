@@ -3,7 +3,6 @@ import "./lib/error-capture";
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
 import { optimizeHtml } from "./lib/static-html.mjs";
-import { analyticsAssetResponse, useWorkerAnalytics } from "./lib/analytics-worker";
 
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
@@ -49,34 +48,13 @@ function isH3SwallowedErrorBody(body: string): boolean {
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
-      const requestUrl = new URL(request.url);
-      if (requestUrl.pathname === "/_analytics/script")
-        return await analyticsAssetResponse(request);
-      if (requestUrl.pathname === "/_analytics/meta-placeholder.js") {
-        return new Response("/* Meta runtime is hosted by the analytics worker. */", {
-          headers: {
-            "Content-Type": "application/javascript; charset=utf-8",
-            "Cache-Control": "public, max-age=300",
-          },
-        });
-      }
-      const preview = requestUrl.pathname === "/_analytics/preview";
-      const pageUrl = new URL(requestUrl);
-      if (preview) {
-        pageUrl.pathname = "/";
-        pageUrl.search = "analytics=worker";
-      }
       const handler = await getServerEntry();
-      const response = await handler.fetch(
-        preview ? new Request(pageUrl, request) : request,
-        env,
-        ctx,
-      );
+      const response = await handler.fetch(request, env, ctx);
       const normalized = await normalizeCatastrophicSsrResponse(response);
       // The public pages are fully rendered on the server and use native links
       // and details. Keep React in the editor, but don't hydrate these pages in
       // production. KingHost has its own packaging pass with the same helper.
-      const pathname = pageUrl.pathname.replace(/\/$/, "") || "/";
+      const pathname = new URL(request.url).pathname.replace(/\/$/, "") || "/";
       if (
         import.meta.env.PROD &&
         import.meta.env.BASE_URL === "/" &&
@@ -91,10 +69,6 @@ export default {
         let body = html;
         try {
           body = optimizeHtml(html);
-          if (pageUrl.searchParams.get("analytics") === "worker") {
-            body = useWorkerAnalytics(body);
-            headers.set("Cache-Control", "no-store");
-          }
         } catch (error) {
           // A future interactive component may need hydration. Preserve the
           // original working response if the optimizer doesn't recognize it.

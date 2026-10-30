@@ -62,8 +62,8 @@ jobs:
           node scripts/install-browser-tools.mjs "$RUNNER_TEMP/lovable-browser"
           node "$RUNNER_TEMP/lovable-browser/node_modules/playwright/cli.js" install --with-deps chromium
           PLAYWRIGHT_MODULE="$RUNNER_TEMP/lovable-browser/node_modules/playwright/index.mjs" LIGHTHOUSE_MODULE="$RUNNER_TEMP/lovable-browser/node_modules/lighthouse/core/index.js" node scripts/check-lovable.mjs
-      - name: Verificar campanhas na experiência worker
-        run: ANALYTICS_TEST_ORIGIN="https://black-november-livros.lovable.app" PLAYWRIGHT_MODULE="$RUNNER_TEMP/lovable-browser/node_modules/playwright/index.mjs" node scripts/check-analytics-worker.mjs
+      - name: Verificar rastreamento publicado
+        run: ANALYTICS_TEST_ORIGIN="https://black-november-livros.lovable.app" PLAYWRIGHT_MODULE="$RUNNER_TEMP/lovable-browser/node_modules/playwright/index.mjs" node scripts/check-tracking.mjs
       - uses: actions/upload-artifact@v7.0.2
         if: always()
         with:

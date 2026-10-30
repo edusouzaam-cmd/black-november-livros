@@ -19,8 +19,8 @@ if (!process.env.ANALYTICS_TEST_ORIGIN) {
 const browser = await chromium.launch({ headless: true });
 const results = [];
 try {
-  for (const mode of ["main", "worker", "fallback"]) {
-    const context = await browser.newContext({ serviceWorkers: mode === "fallback" ? "block" : "allow" });
+  for (const mode of ["main"]) {
+    const context = await browser.newContext();
     const events = [];
     const requests = [];
     const failures = [];
@@ -51,7 +51,7 @@ try {
     page.on("console", (message) => {
       if (message.type() === "error") failures.push(message.text().slice(0, 250));
     });
-    await page.goto(`${origin}${mode !== "main" ? "/_analytics/preview" : "/?analytics=main"}`, {
+    await page.goto(`${origin}/`, {
       waitUntil: "load",
       timeout: 60000,
     });
@@ -80,7 +80,7 @@ try {
     };
     results.push(summary);
     mkdirSync("audit-results", { recursive: true });
-    writeFileSync("audit-results/analytics-worker.json", JSON.stringify(results, null, 2));
+    writeFileSync("audit-results/tracking.json", JSON.stringify(results, null, 2));
     console.log(JSON.stringify(summary));
     await context.close();
   }
@@ -94,10 +94,8 @@ try {
       url.includes("signals/config/3018542305084132"),
     );
     assert(metaConfigured, `Meta runtime/configuration must initialize in ${mode}`);
-    if (mode === "worker") {
-      assert(mainGa4 > 0, "GA4 must remain on the main thread for page-exit tracking");
-      assert(summary.workers > 0, "Worker must initialize");
-    }
+    assert(mainGa4 > 0, "Native GA4 script must initialize");
+    assert(summary.requests.some((url) => url.includes("666388917")), "Google Ads must initialize");
   }
 } finally {
   await browser.close();

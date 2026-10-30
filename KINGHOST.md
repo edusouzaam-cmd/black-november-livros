@@ -72,14 +72,3 @@ fontes, imagens e checkout. Os relatórios ficam no artifact `black-livros-lovab
 Os scripts de Google/Meta continuam sendo servidos pelos próprios fornecedores; seu
 peso e os tempos de execução não podem ser reduzidos pelo build da página sem alterar
 a configuração das campanhas no GTM.
-
-## Experiência isolada de analytics
-
-`/_analytics/preview` é uma rota de verificação da produção Lovable. Ela renderiza
-a mesma oferta com Meta no Partytown, mantendo GTM/Google/GA4 na thread principal
-para preservar eventos de saída. A página principal mantém o carregamento anterior
-até os testes de `page_view` e `PageView` confirmarem a compatibilidade.
-
-A rota `/_analytics/script` serve somente os dois tipos de recursos JavaScript públicos
-do Meta necessários ao worker; não aceita outros hosts, protocolos, caminhos, credenciais
-ou redirecionamentos. A experiência não é ativada no pacote estático KingHost.
