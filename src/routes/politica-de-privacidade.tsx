@@ -1,10 +1,14 @@
+import { productionUrl } from "@/lib/site-url";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { LegalPage } from "@/components/site/site-layout";
 
 export const Route = createFileRoute("/politica-de-privacidade")({
   head: () => ({
+    links: [{ rel: "canonical", href: productionUrl("politica-de-privacidade") }],
     meta: [
+      { property: "og:title", content: "Política de Privacidade — Engeteles" },
+      { property: "og:url", content: productionUrl("politica-de-privacidade") },
       { title: "Política de Privacidade — Engeteles" },
       { name: "description", content: "Política de privacidade e de cookies da Engeteles." },
     ],

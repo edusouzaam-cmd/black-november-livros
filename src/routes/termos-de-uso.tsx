@@ -1,10 +1,14 @@
+import { productionUrl } from "@/lib/site-url";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { LegalPage } from "@/components/site/site-layout";
 
 export const Route = createFileRoute("/termos-de-uso")({
   head: () => ({
+    links: [{ rel: "canonical", href: productionUrl("termos-de-uso") }],
     meta: [
+      { property: "og:title", content: "Termos de Uso — Engeteles" },
+      { property: "og:url", content: productionUrl("termos-de-uso") },
       { title: "Termos de Uso — Engeteles" },
       { name: "description", content: "Termos de uso do site da Engeteles." },
     ],

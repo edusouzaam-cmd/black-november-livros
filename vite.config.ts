@@ -6,10 +6,34 @@
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
+const kinghost = process.env["KINGHOST_BUILD"] === "1";
+
 export default defineConfig({
+  ...(kinghost
+    ? {
+        vite: { base: "/black-livros/" },
+        nitro: false,
+      }
+    : {}),
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
     server: { entry: "server" },
+    ...(kinghost
+      ? {
+          router: { basepath: "/black-livros" },
+          prerender: {
+            enabled: true,
+            crawlLinks: false,
+            autoStaticPathsDiscovery: false,
+            failOnError: true,
+          },
+          pages: ["/", "/termos-de-uso", "/politica-de-privacidade"].map((path) => ({
+            path,
+            prerender: { enabled: true, autoSubfolderIndex: true },
+          })),
+          sitemap: { enabled: false },
+        }
+      : {}),
   },
 });

@@ -1,3 +1,4 @@
+import { publicUrl, productionUrl } from "@/lib/site-url";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
@@ -62,7 +63,7 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
             Try again
           </button>
           <a
-            href="/"
+            href={publicUrl("")}
             className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
           >
             Go home
@@ -78,23 +79,32 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Black November Livros — Engeteles" },
+      {
+        name: "description",
+        content:
+          "Combo de livros de manutenção da Engeteles com curso bônus e frete grátis. Oferta Black November.",
+      },
+      { name: "author", content: "Engeteles" },
+      { property: "og:title", content: "Black November Livros — Engeteles" },
+      {
+        property: "og:description",
+        content:
+          "Combo de livros de manutenção da Engeteles com curso bônus e frete grátis. Oferta Black November.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
+      { property: "og:image", content: productionUrl("assets/black-november-livros.webp") },
+      { property: "og:locale", content: "pt_BR" },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/favicon.ico", sizes: "48x48" },
-      { rel: "icon", href: "/favicon.png", type: "image/png", sizes: "512x512" },
-      { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
+      { rel: "icon", href: publicUrl("favicon.ico"), sizes: "48x48" },
+      { rel: "icon", href: publicUrl("favicon.png"), type: "image/png", sizes: "512x512" },
+      { rel: "apple-touch-icon", href: publicUrl("apple-touch-icon.png") },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {

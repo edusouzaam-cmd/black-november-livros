@@ -30,3 +30,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Pacote gerado para publicação manual
+kinghost-package/

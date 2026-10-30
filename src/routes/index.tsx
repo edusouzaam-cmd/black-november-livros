@@ -1,3 +1,5 @@
+import { productionUrl } from "@/lib/site-url";
+import { publicUrl } from "@/lib/site-url";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
 import {
@@ -16,7 +18,10 @@ import { SiteShell } from "@/components/site/site-layout";
 
 export const Route = createFileRoute("/")({
   head: () => ({
+    links: [{ rel: "canonical", href: productionUrl("") }],
     meta: [
+      { property: "og:title", content: "Combo de Livros Black November — Engeteles" },
+      { property: "og:url", content: productionUrl("") },
       { title: "Combo de Livros Black November — Engeteles" },
       {
         name: "description",
@@ -54,7 +59,7 @@ const BOOKS: Book[] = [
     shortTitle: "PCM Descomplicado",
     subtitle:
       "Uma metodologia passo a passo para implantar e gerenciar um setor de Planejamento e Controle da Manutenção.",
-    image: "/assets/books/pcm-descomplicado-4a.webp",
+    image: publicUrl("/assets/books/pcm-descomplicado-4a.webp"),
     imageAlt: "Livro PCM Descomplicado, quarta edição",
     pages: 290,
     chapters: [
@@ -80,7 +85,7 @@ const BOOKS: Book[] = [
     shortTitle: "Gestão Financeira da Manutenção",
     subtitle:
       "Aprenda a planejar orçamentos, controlar custos e tomar decisões financeiras estratégicas na manutenção.",
-    image: "/assets/books/gestao-financeira-manutencao.webp",
+    image: publicUrl("/assets/books/gestao-financeira-manutencao.webp"),
     imageAlt: "Livro Gestão Financeira da Manutenção, segunda edição",
     pages: 248,
     chapters: [
@@ -101,7 +106,7 @@ const BOOKS: Book[] = [
     title: "Não Existe Melhoria de Processos sem o Desenvolvimento de Pessoas",
     shortTitle: "Não Existe Melhoria de Processos",
     subtitle: "Um manual para desenvolver pessoas e melhorar processos no ambiente de manutenção.",
-    image: "/assets/books/nao-existe-melhoria-pessoas.webp",
+    image: publicUrl("/assets/books/nao-existe-melhoria-pessoas.webp"),
     imageAlt: "Livro Não Existe Melhoria de Processos sem o Desenvolvimento de Pessoas",
     pages: 219,
     chapters: [
@@ -272,7 +277,7 @@ function Hero() {
     <section className="relative isolate overflow-hidden bg-[radial-gradient(ellipse_at_top,#00325b_0%,#00182b_55%,#000_100%)] px-4 pb-16 pt-10 text-center">
       {/* Foto decorativa em P&B, bem apagada, só para dar clima de indústria. */}
       <img
-        src="/assets/fundo-industria.jpg"
+        src={publicUrl("/assets/fundo-industria.jpg")}
         alt=""
         aria-hidden
         className="pointer-events-none absolute inset-0 -z-10 h-full w-full object-cover opacity-[0.22] mix-blend-luminosity"
@@ -286,7 +291,7 @@ function Hero() {
       </p>
       <Countdown />
       <img
-        src="/assets/black-november-livros.webp"
+        src={publicUrl("/assets/black-november-livros.webp")}
         alt="Livros PCM Descomplicado, Não Existe Melhoria de Processos e Gestão Financeira da Manutenção com o selo Black November"
         width={1680}
         height={945}
@@ -374,7 +379,7 @@ function BonusSection() {
         <div className="grid items-center gap-10 md:grid-cols-2">
           <div className="text-center">
             <img
-              src="/assets/curso-planejadores.png"
+              src={publicUrl("/assets/curso-planejadores.png")}
               alt="Curso Formação para Planejadores de Manutenção aberto em um notebook"
               loading="lazy"
               width={1024}

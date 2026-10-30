@@ -1,3 +1,4 @@
+import { publicUrl } from "@/lib/site-url";
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { Mail, Phone } from "lucide-react";
@@ -16,7 +17,7 @@ export function SiteHeader() {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4">
         <Link to="/" aria-label="Engeteles, página inicial">
           <img
-            src="/assets/logo-engeteles.png"
+            src={publicUrl("/assets/logo-engeteles.png")}
             alt="Engeteles"
             width={1092}
             height={331}
@@ -27,7 +28,7 @@ export function SiteHeader() {
           <ul className="flex gap-8 text-sm font-semibold text-white/85">
             {MENU.map((item) => (
               <li key={item.href}>
-                <a href={item.href} className="transition hover:text-[#00aeef]">
+                <a href={publicUrl(item.href)} className="transition hover:text-[#00aeef]">
                   {item.label}
                 </a>
               </li>
@@ -35,7 +36,7 @@ export function SiteHeader() {
           </ul>
         </nav>
         <a
-          href="/#oferta"
+          href={publicUrl("/#oferta")}
           className="rounded-full bg-[#00aeef] px-4 py-2 text-xs font-bold uppercase tracking-wider text-[#001e33] transition hover:bg-[#29c3fa] sm:px-5 sm:text-sm"
         >
           Comprar combo
@@ -50,7 +51,7 @@ export function SiteFooter() {
     <footer className="bg-[#00182b] px-4 py-10 text-sm text-white">
       <div className="mx-auto grid max-w-5xl items-center gap-8 text-center sm:grid-cols-3 sm:text-left">
         <img
-          src="/assets/logo-engeteles-editora.webp"
+          src={publicUrl("/assets/logo-engeteles-editora.webp")}
           alt="Engeteles Editora"
           width={512}
           height={180}
