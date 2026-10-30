@@ -22,17 +22,24 @@ try {
   for (const mode of ["main", "worker"]) {
     const context = await browser.newContext();
     const events = [];
+    const requests = [];
     const failures = [];
     context.on("request", (request) => {
       const u = new URL(request.url());
       const data = new URLSearchParams(request.postData() || "");
+      if (/google|facebook|_analytics/.test(u.hostname + u.pathname))
+        requests.push(u.hostname + u.pathname);
       const event =
         u.searchParams.get("en") || u.searchParams.get("ev") || data.get("en") || data.get("ev");
-      if (event && /google-analytics.com|facebook.com/.test(u.hostname))
+      if (event)
         events.push({
           host: u.hostname,
           event,
-          id: u.searchParams.get("tid") || u.searchParams.get("id"),
+          id:
+            u.searchParams.get("tid") ||
+            u.searchParams.get("id") ||
+            data.get("tid") ||
+            data.get("id"),
         });
     });
     const page = await context.newPage();
@@ -55,11 +62,22 @@ try {
     const mainGa4 = await page
       .locator('script[src*="/gtag/js?id=G-"]:not([type="text/partytown"])')
       .count();
-    const summary = { mode, events, mainGa4, workers: page.workers().length, errors: failures };
+    const summary = {
+      mode,
+      events,
+      mainGa4,
+      workers: page.workers().length,
+      errors: failures,
+      requests: [...new Set(requests)],
+    };
     results.push(summary);
     mkdirSync("audit-results", { recursive: true });
     writeFileSync("audit-results/analytics-worker.json", JSON.stringify(results, null, 2));
     console.log(JSON.stringify(summary));
+    await context.close();
+  }
+  for (const summary of results) {
+    const { mode, events, mainGa4 } = summary;
     assert(
       events.some((e) => e.event === "page_view" && e.id === "G-JPL447HFSS"),
       `GA4 page_view missing in ${mode}`,
@@ -72,7 +90,6 @@ try {
       assert(mainGa4 > 0, "GA4 must remain on the main thread for page-exit tracking");
       assert(summary.workers > 0, "Worker must initialize");
     }
-    await context.close();
   }
 } finally {
   await browser.close();

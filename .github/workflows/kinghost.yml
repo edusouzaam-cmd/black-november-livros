@@ -25,7 +25,7 @@ jobs:
         run: bun run validate:kinghost
       - name: Verificar navegação no navegador
         run: |
-          npm install --prefix "$RUNNER_TEMP/kinghost-browser" playwright@1.58.2 lighthouse@12.8.2
+          node scripts/install-browser-tools.mjs "$RUNNER_TEMP/kinghost-browser"
           node "$RUNNER_TEMP/kinghost-browser/node_modules/playwright/cli.js" install --with-deps chromium
           PLAYWRIGHT_MODULE="$RUNNER_TEMP/kinghost-browser/node_modules/playwright/index.mjs" LIGHTHOUSE_MODULE="$RUNNER_TEMP/kinghost-browser/node_modules/lighthouse/core/index.js" node scripts/check-browser-kinghost.mjs
       - uses: actions/upload-artifact@v7.0.2
@@ -59,11 +59,11 @@ jobs:
           NITRO_PRESET=node-server bun run build
       - name: Verificar HTML e interações da produção Lovable
         run: |
-          npm install --prefix "$RUNNER_TEMP/lovable-browser" playwright@1.58.2 lighthouse@12.8.2
+          node scripts/install-browser-tools.mjs "$RUNNER_TEMP/lovable-browser"
           node "$RUNNER_TEMP/lovable-browser/node_modules/playwright/cli.js" install --with-deps chromium
           PLAYWRIGHT_MODULE="$RUNNER_TEMP/lovable-browser/node_modules/playwright/index.mjs" LIGHTHOUSE_MODULE="$RUNNER_TEMP/lovable-browser/node_modules/lighthouse/core/index.js" node scripts/check-lovable.mjs
       - name: Verificar campanhas na experiência worker
-        run: PLAYWRIGHT_MODULE="$RUNNER_TEMP/lovable-browser/node_modules/playwright/index.mjs" node scripts/check-analytics-worker.mjs
+        run: ANALYTICS_TEST_ORIGIN="https://black-november-livros.lovable.app" PLAYWRIGHT_MODULE="$RUNNER_TEMP/lovable-browser/node_modules/playwright/index.mjs" node scripts/check-analytics-worker.mjs
       - uses: actions/upload-artifact@v7.0.2
         if: always()
         with:
