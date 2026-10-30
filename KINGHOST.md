@@ -42,6 +42,15 @@ e o contador recebe um script de aproximadamente 1 KB. O build normal do Lovable
 continua usando React, para manter a edição e a prévia.
 
 As imagens têm variantes responsivas; o navegador baixa a resolução adequada.
+A primeira dobra usa AVIF quando suportado, com fallback WebP, e preloads responsivos
+para o fundo e o combo. O fundo também recebe prioridade alta: foi o elemento LCP
+identificado no relatório mobile fornecido em 30/10/2026.
+
+O GTM mantém o mesmo ID e enfileira o evento inicial imediatamente, mas injeta o
+container após o carregamento, em um intervalo ocioso (com timeout de 1,5 segundo),
+ou antes disso no primeiro toque/clique/tecla. Isso evita disputar a primeira
+renderização com Analytics, Google Ads e Meta. As tags passam a inicializar mais tarde
+em visitas sem interação; o conteúdo, as fontes e os links permanecem iguais.
 O CSS inclui apenas as classes das páginas usadas, sem gerar estilos dos componentes
 UI de exemplo. Arquivos de imagem e scripts não referenciados são excluídos do pacote.
 

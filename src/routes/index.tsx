@@ -18,7 +18,32 @@ import { SiteShell } from "@/components/site/site-layout";
 
 export const Route = createFileRoute("/")({
   head: () => ({
-    links: [{ rel: "canonical", href: productionUrl("") }],
+    links: [
+      { rel: "canonical", href: productionUrl("") },
+      {
+        rel: "preload",
+        as: "image",
+        type: "image/avif",
+        href: publicUrl("/assets/optimized/fundo-industria-960.avif"),
+        imageSrcSet: `${publicUrl("/assets/optimized/fundo-industria-960.avif")} 960w, ${publicUrl("/assets/optimized/fundo-industria-1672.avif")} 1672w`,
+        imageSizes: "100vw",
+        fetchPriority: "high",
+      },
+      {
+        rel: "preload",
+        as: "image",
+        type: "image/avif",
+        href: publicUrl("/assets/optimized/black-november-livros-768.avif"),
+        imageSrcSet: [480, 768, 1536]
+          .map(
+            (width) =>
+              `${publicUrl(`/assets/optimized/black-november-livros-${width}.avif`)} ${width}w`,
+          )
+          .join(", "),
+        imageSizes: "(min-width: 800px) 768px, calc(100vw - 32px)",
+        fetchPriority: "high",
+      },
+    ],
     meta: [
       { property: "og:title", content: "Combo de Livros Black November — Engeteles" },
       { property: "og:url", content: productionUrl("") },
@@ -298,18 +323,25 @@ function Hero() {
   return (
     <section className="relative isolate overflow-hidden bg-[radial-gradient(ellipse_at_top,#00325b_0%,#00182b_55%,#000_100%)] px-4 pb-16 pt-10 text-center">
       {/* Foto decorativa em P&B, bem apagada, só para dar clima de indústria. */}
-      <img
-        src={publicUrl("/assets/optimized/fundo-industria-1672.webp")}
-        srcSet={`${publicUrl("/assets/optimized/fundo-industria-960.webp")} 960w, ${publicUrl("/assets/optimized/fundo-industria-1672.webp")} 1672w`}
-        sizes="100vw"
-        width={1672}
-        height={941}
-        decoding="async"
-        fetchPriority="low"
-        alt=""
-        aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10 h-full w-full object-cover opacity-[0.22] mix-blend-luminosity"
-      />
+      <picture className="contents">
+        <source
+          type="image/avif"
+          srcSet={`${publicUrl("/assets/optimized/fundo-industria-960.avif")} 960w, ${publicUrl("/assets/optimized/fundo-industria-1672.avif")} 1672w`}
+          sizes="100vw"
+        />
+        <img
+          src={publicUrl("/assets/optimized/fundo-industria-1672.webp")}
+          srcSet={`${publicUrl("/assets/optimized/fundo-industria-960.webp")} 960w, ${publicUrl("/assets/optimized/fundo-industria-1672.webp")} 1672w`}
+          sizes="100vw"
+          width={1672}
+          height={941}
+          decoding="async"
+          fetchPriority="high"
+          alt=""
+          aria-hidden
+          className="pointer-events-none absolute inset-0 -z-10 h-full w-full object-cover opacity-[0.22] mix-blend-luminosity"
+        />
+      </picture>
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-[#00182b]/40 via-[#00182b]/60 to-black"
@@ -318,23 +350,35 @@ function Hero() {
         A oferta termina em
       </p>
       <Countdown />
-      <img
-        src={publicUrl("/assets/optimized/black-november-livros-768.webp")}
-        srcSet={[480, 768, 1536]
-          .map(
-            (width) =>
-              `${publicUrl(`/assets/optimized/black-november-livros-${width}.webp`)} ${width}w`,
-          )
-          .join(", ")}
-        sizes="(min-width: 800px) 768px, calc(100vw - 32px)"
-        decoding="async"
-        alt="Livros PCM Descomplicado, Não Existe Melhoria de Processos e Gestão Financeira da Manutenção com o selo Black November"
-        width={1653}
-        height={952}
-        style={{ aspectRatio: "1653 / 952" }}
-        fetchPriority="high"
-        className="mx-auto mt-8 w-full max-w-3xl drop-shadow-[0_18px_34px_rgba(0,0,0,0.45)] motion-safe:animate-[bn-float_7s_ease-in-out_infinite]"
-      />
+      <picture className="contents">
+        <source
+          type="image/avif"
+          srcSet={[480, 768, 1536]
+            .map(
+              (width) =>
+                `${publicUrl(`/assets/optimized/black-november-livros-${width}.avif`)} ${width}w`,
+            )
+            .join(", ")}
+          sizes="(min-width: 800px) 768px, calc(100vw - 32px)"
+        />
+        <img
+          src={publicUrl("/assets/optimized/black-november-livros-768.webp")}
+          srcSet={[480, 768, 1536]
+            .map(
+              (width) =>
+                `${publicUrl(`/assets/optimized/black-november-livros-${width}.webp`)} ${width}w`,
+            )
+            .join(", ")}
+          sizes="(min-width: 800px) 768px, calc(100vw - 32px)"
+          decoding="async"
+          alt="Livros PCM Descomplicado, Não Existe Melhoria de Processos e Gestão Financeira da Manutenção com o selo Black November"
+          width={1653}
+          height={952}
+          style={{ aspectRatio: "1653 / 952" }}
+          fetchPriority="high"
+          className="mx-auto mt-8 w-full max-w-3xl drop-shadow-[0_18px_34px_rgba(0,0,0,0.45)] motion-safe:animate-[bn-float_7s_ease-in-out_infinite]"
+        />
+      </picture>
       <h1 className="mt-6 font-[Montserrat] text-4xl font-extrabold leading-tight text-white sm:text-6xl lg:text-7xl">
         Combo de livros <span className="text-[#00aeef]">pela metade do preço</span>
       </h1>

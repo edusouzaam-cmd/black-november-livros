@@ -29,6 +29,7 @@ const server = createServer((req, res) => {
         ".js": "text/javascript",
         ".css": "text/css",
         ".webp": "image/webp",
+        ".avif": "image/avif",
         ".png": "image/png",
         ".jpg": "image/jpeg",
         ".ico": "image/x-icon",

@@ -96,7 +96,7 @@ for (const file of files.filter((f) => f.endsWith(".css"))) {
 for (const file of files.filter((f) => /\.(?:js|html)$/.test(f))) {
   const text = readFileSync(file, "utf8");
   for (const match of text.matchAll(
-    /\/black-livros\/assets\/[a-zA-Z0-9_./-]+\.(?:webp|png|jpe?g|svg|woff2?|ico)/g,
+    /\/black-livros\/assets\/[a-zA-Z0-9_./-]+\.(?:avif|webp|png|jpe?g|svg|woff2?|ico)/g,
   ))
     checkUrl(match[0], "index.html");
 }
