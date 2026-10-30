@@ -19,8 +19,8 @@ if (!process.env.ANALYTICS_TEST_ORIGIN) {
 const browser = await chromium.launch({ headless: true });
 const results = [];
 try {
-  for (const mode of ["main", "worker"]) {
-    const context = await browser.newContext();
+  for (const mode of ["main", "worker", "fallback"]) {
+    const context = await browser.newContext({ serviceWorkers: mode === "fallback" ? "block" : "allow" });
     const events = [];
     const requests = [];
     const failures = [];
@@ -51,7 +51,7 @@ try {
     page.on("console", (message) => {
       if (message.type() === "error") failures.push(message.text().slice(0, 250));
     });
-    await page.goto(`${origin}${mode === "worker" ? "/_analytics/preview" : "/?analytics=main"}`, {
+    await page.goto(`${origin}${mode !== "main" ? "/_analytics/preview" : "/?analytics=main"}`, {
       waitUntil: "load",
       timeout: 60000,
     });
