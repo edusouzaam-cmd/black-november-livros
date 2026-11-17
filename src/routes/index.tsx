@@ -410,12 +410,12 @@ function BookSection({ book, index }: { book: Book; index: number }) {
               className="hidden"
               type="image/avif"
               srcSet={book.imageAvifSrcSet}
-              sizes="(min-width: 416px) 320px, calc(100vw - 98px)"
+              sizes="(min-width: 416px) 430px, calc((100vw - 98px) * 1.34)"
             />
             <img
               src={book.image}
               srcSet={book.imageSrcSet}
-              sizes="(min-width: 416px) 320px, calc(100vw - 98px)"
+              sizes="(min-width: 416px) 430px, calc((100vw - 98px) * 1.34)"
               width={640}
               height={640}
               decoding="async"

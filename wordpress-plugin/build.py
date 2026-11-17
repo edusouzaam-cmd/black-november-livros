@@ -41,6 +41,21 @@ def pages():
     return out
 
 
+def add_versions(html, site_dir):
+    """Acrescenta ?v=<hash do arquivo> em cada arquivo do plugin, para o navegador
+    não reaproveitar uma versão antiga em cache depois de uma atualização."""
+    import hashlib
+
+    def ver(m):
+        rel = m.group(1)
+        path = os.path.join(site_dir, rel)
+        if not os.path.isfile(path):
+            return m.group(0)
+        digest = hashlib.md5(open(path, "rb").read()).hexdigest()[:10]
+        return f"{ASSETS}/{rel}?v={digest}"
+    return re.sub(re.escape(ASSETS) + r'/([^"\'\s),?#]+)(?![?\w])', ver, html)
+
+
 def main():
     if not os.path.isdir(PACKAGE):
         sys.exit("kinghost-package/ não existe: rode antes `bun run build:kinghost`.")
@@ -89,6 +104,11 @@ def main():
                 open(dest, "wb").write(buf.getvalue())
                 continue
         shutil.copy2(src, dest)
+
+    for route, file in routes.items():
+        dest = os.path.join(SITE, file)
+        html = open(dest, encoding="utf-8").read()
+        open(dest, "w", encoding="utf-8").write(add_versions(html, SITE))
 
     with open(os.path.join(SITE, "routes.php"), "w", encoding="utf-8") as f:
         f.write("<?php\n// Gerado por wordpress-plugin/build.py\nreturn array(\n")
