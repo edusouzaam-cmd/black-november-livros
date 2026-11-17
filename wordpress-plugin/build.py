@@ -26,10 +26,10 @@ BASE = "/black-livros"
 ABS_BASE = "https://engeteles.com.br/black-livros"
 ASSETS = "{{ENGETELES_BLACK_LIVROS_ASSETS}}"
 HOME = "{{ENGETELES_BLACK_LIVROS_HOME}}"
-MAX_ZIP = 2 * 1024 * 1024          # limite padrão de upload do WordPress
-RECOMPRESS_KB = 40                 # WebPs acima disso são recomprimidos
+MAX_ZIP = 60 * 1024 * 1024         # limite de upload configurado no WordPress: 64 MB
+RECOMPRESS_KB = None               # None = imagens na qualidade original
 QUALITY = 64
-OG_IMAGE = "black-november-livros.webp"  # imagem só de compartilhamento: troca pela de 1536 px
+OG_IMAGE = None                    # imagem de compartilhamento original (sem troca)
 
 
 def pages():
@@ -53,7 +53,7 @@ def main():
     htmls = {route: open(os.path.join(PACKAGE, f), encoding="utf-8").read() for route, f in routes.items()}
 
     # Imagem de compartilhamento (og:image) aponta para a versão de 1536 px que já está no pacote.
-    og_replacement = next((f for f in sorted(os.listdir(os.path.join(PACKAGE, "assets")))
+    og_replacement = None if OG_IMAGE is None else next((f for f in sorted(os.listdir(os.path.join(PACKAGE, "assets")))
                            if f.startswith("black-november-livros-1536-") and f.endswith(".webp")), None)
 
     used = set()
@@ -82,7 +82,7 @@ def main():
             sys.exit(f"Arquivo referenciado não existe: {rel}")
         dest = os.path.join(SITE, rel)
         os.makedirs(os.path.dirname(dest), exist_ok=True)
-        if rel.endswith(".webp") and os.path.getsize(src) > RECOMPRESS_KB * 1024:
+        if RECOMPRESS_KB is not None and rel.endswith(".webp") and os.path.getsize(src) > RECOMPRESS_KB * 1024:
             buf = io.BytesIO()
             Image.open(src).save(buf, "WEBP", quality=QUALITY, method=6)
             if buf.tell() < os.path.getsize(src):
@@ -113,7 +113,7 @@ def main():
     print(f"arquivos usados: {len(used)}")
     print(f"zip: {zip_path} ({size / 1024 / 1024:.2f} MB)")
     if size > MAX_ZIP:
-        sys.exit("Pacote passou de 2 MB (limite de upload do WordPress)")
+        sys.exit("Pacote passou de 60 MB (limite de upload configurado no WordPress: 64 MB)")
 
 
 if __name__ == "__main__":
