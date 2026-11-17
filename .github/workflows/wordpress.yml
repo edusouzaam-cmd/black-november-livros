@@ -1,0 +1,44 @@
+name: Pacote WordPress
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version: "22"
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.3.11"
+      - name: Instalar dependências pelo lockfile
+        run: bun install --frozen-lockfile
+      - name: Gerar páginas estáticas
+        run: bun run build:kinghost
+      - name: Validar PHP
+        run: |
+          php -l wordpress-plugin/engeteles-black-livros/engeteles-black-livros.php
+          php -l wordpress-plugin/engeteles-black-livros/uninstall.php
+      - name: Gerar plugin WordPress
+        run: |
+          python3 -m pip install --quiet pillow
+          python3 wordpress-plugin/build.py
+      # O GitHub já compacta o artefato: envia a pasta do plugin (não o .zip)
+      # para que o arquivo baixado seja o plugin pronto para o WordPress.
+      - name: Preparar pasta do artefato
+        run: |
+          mkdir -p artefato
+          cp -r dist/wordpress/engeteles-black-livros artefato/
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: engeteles-black-livros
+          path: artefato/*
+          if-no-files-found: error
+          compression-level: 9
+          retention-days: 30
