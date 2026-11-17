@@ -37,7 +37,7 @@ export const Route = createFileRoute("/")({
         imageSrcSet: [480, 768, 1536]
           .map((width) => `${mediaUrl(`black-november-livros-${width}.avif`)} ${width}w`)
           .join(", "),
-        imageSizes: "(min-width: 800px) 768px, calc(100vw - 32px)",
+        imageSizes: "(min-width: 800px) 1536px, calc((100vw - 32px) * 2)",
         fetchPriority: "high",
       },
     ],
@@ -357,14 +357,14 @@ function Hero() {
           srcSet={[480, 768, 1536]
             .map((width) => `${mediaUrl(`black-november-livros-${width}.avif`)} ${width}w`)
             .join(", ")}
-          sizes="(min-width: 800px) 768px, calc(100vw - 32px)"
+          sizes="(min-width: 800px) 1536px, calc((100vw - 32px) * 2)"
         />
         <img
           src={mediaUrl("black-november-livros-768.webp")}
           srcSet={[480, 768, 1536]
             .map((width) => `${mediaUrl(`black-november-livros-${width}.webp`)} ${width}w`)
             .join(", ")}
-          sizes="(min-width: 800px) 768px, calc(100vw - 32px)"
+          sizes="(min-width: 800px) 1536px, calc((100vw - 32px) * 2)"
           decoding="async"
           alt="Livros PCM Descomplicado, Não Existe Melhoria de Processos e Gestão Financeira da Manutenção com o selo Black November"
           width={1653}
@@ -410,12 +410,12 @@ function BookSection({ book, index }: { book: Book; index: number }) {
               className="hidden"
               type="image/avif"
               srcSet={book.imageAvifSrcSet}
-              sizes="(min-width: 416px) 430px, calc((100vw - 98px) * 1.34)"
+              sizes="(min-width: 416px) 860px, calc((100vw - 98px) * 2.68)"
             />
             <img
               src={book.image}
               srcSet={book.imageSrcSet}
-              sizes="(min-width: 416px) 430px, calc((100vw - 98px) * 1.34)"
+              sizes="(min-width: 416px) 860px, calc((100vw - 98px) * 2.68)"
               width={640}
               height={640}
               decoding="async"
@@ -472,12 +472,12 @@ function BonusSection() {
                 className="hidden"
                 type="image/avif"
                 srcSet={`${mediaUrl("curso-planejadores-448.avif")} 448w, ${mediaUrl("curso-planejadores-896.avif")} 896w`}
-                sizes="(min-width: 480px) 448px, calc(100vw - 32px)"
+                sizes="(min-width: 480px) 896px, calc((100vw - 32px) * 2)"
               />
               <img
                 src={mediaUrl("curso-planejadores-896.webp")}
                 srcSet={`${mediaUrl("curso-planejadores-448.webp")} 448w, ${mediaUrl("curso-planejadores-896.webp")} 896w`}
-                sizes="(min-width: 480px) 448px, calc(100vw - 32px)"
+                sizes="(min-width: 480px) 896px, calc((100vw - 32px) * 2)"
                 decoding="async"
                 alt="Curso Formação para Planejadores de Manutenção aberto em um notebook"
                 loading="lazy"
@@ -577,12 +577,12 @@ function SeparateBooks() {
                   className="hidden"
                   type="image/avif"
                   srcSet={book.imageAvifSrcSet}
-                  sizes="(min-width: 1024px) 326px, (min-width: 640px) calc((100vw - 56px) / 2), calc(100vw - 32px)"
+                  sizes="(min-width: 1024px) 870px, (min-width: 640px) calc((100vw - 56px) * 1.34), calc((100vw - 32px) * 2.68)"
                 />
                 <img
                   src={book.image}
                   srcSet={book.imageSrcSet}
-                  sizes="(min-width: 1024px) 326px, (min-width: 640px) calc((100vw - 56px) / 2), calc(100vw - 32px)"
+                  sizes="(min-width: 1024px) 870px, (min-width: 640px) calc((100vw - 56px) * 1.34), calc((100vw - 32px) * 2.68)"
                   width={640}
                   height={640}
                   decoding="async"
