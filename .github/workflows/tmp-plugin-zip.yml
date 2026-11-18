@@ -1,0 +1,32 @@
+# Temporário: gera o zip do plugin e salva nesta branch para download. Será apagado.
+name: Zip temporário do plugin
+on:
+  push:
+    branches: [tmp-plugin-zip]
+permissions:
+  contents: write
+jobs:
+  zip:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.3.11"
+      - run: bun install --frozen-lockfile
+      - run: bun run build:kinghost
+      - run: |
+          python3 -m pip install --quiet pillow
+          python3 wordpress-plugin/build.py
+      - name: Salvar zip na branch
+        run: |
+          mkdir -p plugin-zip && cp dist/wordpress/engeteles-black-livros.zip plugin-zip/
+          sha256sum plugin-zip/engeteles-black-livros.zip
+          git config user.name "github-actions" && git config user.email "github-actions@users.noreply.github.com"
+          git add -f plugin-zip/engeteles-black-livros.zip
+          git commit -m "zip temporário do plugin"
+          git push origin HEAD:tmp-plugin-zip
